@@ -1,0 +1,14 @@
+{
+  "DICOMIP": "localhost",
+  "DICOMPORT": "11112",
+  "DICOMAETITLE": "FIONA",
+  "DATADIR": "/data",
+  "LOCALTIMEZONE": "Europe/Copenhagen",
+  "SITES": {
+    "PROJ": {
+      "DICOMIP": "localhost",
+      "DICOMPORT": "11112",
+      "DATADIR": "/data"
+    }
+  }
+}

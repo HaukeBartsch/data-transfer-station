@@ -9,10 +9,10 @@
 ```
 
 ```{bash}
-   storescu -v -aec FIONA -aet FIONA -nh +r +sd localhost 11112 hackathon-dataset
+   storescu -v -aec FIONA -aet FIONA -nh +r +sd localhost 11112 <some location with DICOM files>
 ```
 
-# Setup as a system service by (linux only)
+# Setup as a system service (Linux only)
 
 ```{bash}
 cp etc_systemd_system_docker.receiver.service /etc/systemd/system/docker.receiver.service

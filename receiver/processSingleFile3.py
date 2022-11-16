@@ -7,7 +7,7 @@ The parser for the Siemens CSA header have been adapted from
    https://scion.duhs.duke.edu/svn/vespa/tags/0_1_0/libduke_mr/util_dicom_siemens.py
 """
 
-import sys, os, time, atexit, stat, tempfile, copy, traceback
+import sys, os, time, atexit, stat, tempfile, copy, traceback, shutil
 import pydicom, json, re, logging, logging.handlers, threading, string
 import struct
 from signal import SIGTERM
@@ -1091,7 +1091,14 @@ class ProcessSingleFile(Daemon):
                                 with os.fdopen(fd,'w') as f:
                                     json.dump(data,f,indent=2,sort_keys=True,default=str)
                                 # should be atomic now
-                                os.rename(tfn,fn3)
+                                try:
+                                        os.rename(tfn,fn3)
+                                except OSError:
+                                        try:
+                                                shutil.move(tfn,fn3) # this would rename if possible on its own
+                                        except:
+                                                print("Error on moving json from temp to raw.")
+                                                pass
                                 os.chmod(fn3, 0o666)
                                 os.umask(oldmask)
                 rp.close()

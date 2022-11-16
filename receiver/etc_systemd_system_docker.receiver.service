@@ -9,7 +9,8 @@ Restart=always
 ExecStartPre=-/usr/bin/docker exec %n stop
 ExecStartPre=-/usr/bin/docker rm %n
 ExecStart=/usr/bin/docker run --rm --name %n \
-    -v /data:/data \
+    -v /data/site/archive:/data/site/archive \
+    -v /data/site/raw:/data/site/raw \
     -v /data/logs:/root/logs \
     -p 11112:11112 \
     receiver:latest

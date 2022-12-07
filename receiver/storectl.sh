@@ -83,11 +83,12 @@ case $1 in
 	    --datadir ${ARRIVEDDIR} \
 	    --datapipe ${pipe} \
 	    --promiscuous \
-            --write-xfer-little \
-            --exec-on-reception "PleaseLookAtThis '#a' '#c' '#r' '#p' '#f'" \
-            --sort-on-study-uid scp \
-            --output-directory "$od" \
-            $port >> ${SERVERDIR}/logs/storescpd${projname}.log 2>&1  &
+        --accept-all \
+        --write-xfer-same \
+        --exec-on-reception "PleaseLookAtThis '#a' '#c' '#r' '#p' '#f'" \
+        --sort-on-study-uid scp \
+        --output-directory "$od" \
+        $port >> ${SERVERDIR}/logs/storescpd${projname}.log 2>&1  &
         pid=$!
         echo $pid > $pidfile
         ;;

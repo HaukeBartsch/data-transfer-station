@@ -1,7 +1,8 @@
 FROM debian:bookworm-slim
 # Build, run and test:
-#   docker build -t receiver -f Dockerfile .
+#   docker build --no-cache -t receiver -f Dockerfile .
 #   docker run --rm -d -p 11112:11112 -v /tmp:/data/site/archive -v /tmp:/root/logs receiver
+#   # docker run --rm -d -p 11112:11112 -v /tmp:/data/site/archive -v /tmp/.arrived:/data/site/.arrived -v /tmp/raw:/data/site/raw -v /tmp:/root/logs receiver
 #   storescu -v -aec FIONA -aet FIONA -nh +r +sd localhost 11112 hackathon-dataset 
 # Setup as a system service by (linux only):
 #   cp etc_systemd_system_docker.receiver.service /etc/systemd/system/docker.receiver.service
@@ -18,7 +19,12 @@ COPY heartbeat.sh /root/
 COPY config.json /data/config/config.json
 COPY classifyRules.json /root/
 
-RUN mkdir -p /root/logs && mkdir -p /root/.pids && mkdir -p /data/site/archive && mkdir -p /data/site/temp
+RUN mkdir -p /root/logs \
+    && mkdir -p /root/.pids \
+    && mkdir -p /data/site/archive \
+    && mkdir -p /data/site/raw \
+    && mkdir -p /data/site/.arrived \
+    && mkdir -p /data/site/temp
 
 RUN chmod 0744 /root/storectl.sh
 RUN chmod 0744 /root/heartbeat.sh
@@ -28,7 +34,9 @@ RUN pip install pydicom
 
 # Lets use a default project name "PROJ". We need a corresponding entry in /data/config/config.json.
 RUN crontab -l | { cat; echo "*/10 * * * * /root/storectl.sh start PROJ"; } | crontab -
+RUN crontab -l | { cat; echo "@reboot /root/storectl.sh start PROJ"; } | crontab -
 RUN crontab -l | { cat; echo "*/10 * * * * python3 /root/processSingleFile3.py start PROJ"; } | crontab -
+RUN crontab -l | { cat; echo "@reboot python3 /root/processSingleFile3.py start PROJ"; } | crontab -
 RUN crontab -l | { cat; echo "* * * * * /root/heartbeat.sh PROJ"; } | crontab -
 
 # create the propper storescp (depends on 3.6.7)

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from datetime import datetime
-import re, sys, os
+import re, sys, os, time, json
 
 # continuously check folder specified in config.json
 config = {
@@ -13,7 +13,7 @@ config = {
 }
 
 with open("config.json", "r") as f:
-    config = read(f)
+    config = json.load(f)
     f.close()
 
 if not(os.path.isdir(config["arrived"])):
@@ -41,7 +41,7 @@ while True:
                 SeriesInstanceUID = x[5]
  
             mtime = os.path.getmtime(file)
-            t = datetime.fromtimestamp(t)
+            t = datetime.fromtimestamp(mtime)
             now = datetime.now()
             delta = now - t
             if delta.total_seconds() > config["timeout"]:

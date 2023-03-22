@@ -13,7 +13,6 @@ ExecStart=/usr/bin/docker run --rm --name %n \
     -v /data/site/raw:/data/site/raw \
     -v /data/site/.arrived:/data/site/.arrived \
     -v /data/logs:/root/logs \
-    -p 11112:11112 \
     trigger:latest
 
 [Install]

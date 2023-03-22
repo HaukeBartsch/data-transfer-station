@@ -9,7 +9,8 @@ config = {
     "trigger-study": [{
         "send": "http",
         "destination": "http://localhost:11120"
-    }]
+    }],
+    "trigger-series": []
 }
 
 with open("config.json", "r") as f:
@@ -45,9 +46,16 @@ while True:
             now = datetime.now()
             delta = now - t
             if delta.total_seconds() > config["timeout"]:
-                # now trigger the action
-                print("Trigger the action now for type: %s" % (type))
-
+                if type == "study":
+                    if len(config["trigger-study"]) > 0:
+                        for action in config["trigger-study"]:
+                            # now trigger the action
+                             print("Trigger the action now for type: %s, run %s" % (type, action["destination"]))
+                elif type == "series":
+                    if len(config["trigger-series"]) > 0:
+                        for action in config["trigger-series"]:
+                            # now trigger the action
+                             print("Trigger the action now for type: %s, run %s" % (type, action["destination"]))
                 # remove the .arrived file again
                 pass
     time.sleep(1)

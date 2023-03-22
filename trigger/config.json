@@ -1,4 +1,9 @@
 {
-    "arrived": "/tmp/.arrived",
-    "timeout": 16
+    "arrived": "/tmp/site/.arrived",
+    "timeout": 16,
+    "trigger-study": [{
+        "send": "http",
+        "destination": "http://localhost:11120"
+    }],
+    "trigger-series": []
 }

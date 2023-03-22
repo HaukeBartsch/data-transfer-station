@@ -5,7 +5,10 @@
 ```
 
 ```{bash}
-   docker run --rm -d -p 11112:11112 -v /tmp/site/archive:/data/site/archive -v /tmp/site/raw:/data/site/raw -v /tmp:/root/logs receiver
+   docker run --rm -d -p 11112:11112 -v /tmp/site/archive:/data/site/archive \
+              -v /tmp/site/raw:/data/site/raw \
+              -v /tmp/site/.arrived:/data/site/.arrived \
+	      -v /tmp:/root/logs receiver
 ```
 
 ```{bash}

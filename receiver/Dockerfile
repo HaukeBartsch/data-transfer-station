@@ -43,7 +43,7 @@ RUN cd /opt && wget https://dicom.offis.de/download/dcmtk/dcmtk367/dcmtk-3.6.7.t
 
 COPY storescp.cc_new /opt/dcmtk-3.6.7/dcmnet/apps/storescp.cc
 
-riggRUN apt install -y zlib1g-dev libtiff-dev libpng-dev libssl-dev libicu-dev libxml2-dev libopenjp2-7-dev libwrap0-dev libsndfile1-dev
+RUN apt install -y zlib1g-dev libtiff-dev libpng-dev libssl-dev libicu-dev libxml2-dev libopenjp2-7-dev libwrap0-dev libsndfile1-dev
 RUN cd /opt/dcmtk-3.6.7/ && cmake . && make storescp && cp /opt/dcmtk-3.6.7/bin/storescp /root/storescpFIONA
 
 RUN \rm -rf /opt/dcmtk-3.6.7 && apt-get clean && apt-get autoremove --yes

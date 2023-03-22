@@ -9,7 +9,7 @@ FROM debian:bookworm-slim
 #   systemctl enable docker.receiver.service
 #   systemctl start docker.receiver.service  
 
-RUN apt update && apt install -y procps net-tools jq dcmtk cron wget cmake gcc g++ python3 python3-pip
+RUN apt update && apt install -y procps net-tools jq dcmtk cron wget cmake gcc g++ python3 python3-pip python3-pydicom
 
 #RUN apt install -y vim emacs less
 
@@ -29,9 +29,6 @@ RUN mkdir -p /root/logs \
 RUN chmod 0744 /root/storectl.sh
 RUN chmod 0744 /root/heartbeat.sh
 
-# configure libraries for python3
-RUN pip install pydicom
-
 # Lets use a default project name "PROJ". We need a corresponding entry in /data/config/config.json.
 RUN crontab -l | { cat; echo "*/10 * * * * /root/storectl.sh start PROJ"; } | crontab -
 RUN crontab -l | { cat; echo "@reboot /root/storectl.sh start PROJ"; } | crontab -
@@ -46,7 +43,7 @@ RUN cd /opt && wget https://dicom.offis.de/download/dcmtk/dcmtk367/dcmtk-3.6.7.t
 
 COPY storescp.cc_new /opt/dcmtk-3.6.7/dcmnet/apps/storescp.cc
 
-RUN apt install -y zlib1g-dev libtiff-dev libpng-dev libssl-dev libicu-dev libxml2-dev libopenjp2-7-dev libwrap0-dev libsndfile1-dev
+riggRUN apt install -y zlib1g-dev libtiff-dev libpng-dev libssl-dev libicu-dev libxml2-dev libopenjp2-7-dev libwrap0-dev libsndfile1-dev
 RUN cd /opt/dcmtk-3.6.7/ && cmake . && make storescp && cp /opt/dcmtk-3.6.7/bin/storescp /root/storescpFIONA
 
 RUN \rm -rf /opt/dcmtk-3.6.7 && apt-get clean && apt-get autoremove --yes

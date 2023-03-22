@@ -1,5 +1,5 @@
 {
-    "arrived": "/tmp/site/.arrived",
+    "arrived": "/data/site/.arrived",
     "timeout": 16,
     "trigger-study": [{
         "send": "http",

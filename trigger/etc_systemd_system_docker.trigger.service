@@ -1,6 +1,6 @@
 [Unit]
 Description=DICOM Trigger Service
-After=docker.service
+After=docker.receiver.service
 Requires=docker.service
 
 [Service]

@@ -8,7 +8,5 @@ RUN apt update && apt install -y procps net-tools jq dcmtk cron wget cmake gcc g
 
 COPY trigger.py /trigger.py
 COPY config.json /config.json
-RUN chmod +x /trigger.sh
-
 
 CMD [ "/trigger.py", "config.json" ]

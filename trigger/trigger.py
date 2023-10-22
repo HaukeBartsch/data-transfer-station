@@ -40,7 +40,7 @@ if not(os.path.isdir(config["arrived"])):
 
 def RunExec( cmd, StudyInstanceUID, SeriesInstanceUID=None ):
     # run the array cmd, fill in the placeholder first
-    if not(SeriesInstanceUID == None):
+    if SeriesInstanceUID is not None:
         SeriesInstanceUID = "/" + SeriesInstanceUID
     placeholders = {  
         "@PATH@": "%s/%s%s" % (config["raw"], StudyInstanceUID, SeriesInstanceUID),

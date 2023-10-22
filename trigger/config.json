@@ -1,5 +1,7 @@
 {
     "arrived": "/data/site/.arrived",
+    "raw": "/data/site/raw",
+    "archive": "/data/site/archive",
     "timeout": 16,
     "trigger-study": [
         {

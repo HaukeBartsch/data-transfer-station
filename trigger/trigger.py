@@ -13,12 +13,18 @@ import subprocess
 #
 config = {
     "arrived": "",
+    "raw": "",
+    "archive": "",
     "timeout": 16,
     "trigger-study": [
         {
             "type": "send",
             "send": "http",
             "destination": "http://localhost:11120"
+        },
+        {
+            "type": "exec",
+            "cmd": [ "echo", "triggered this service", "@StudyInstanceUID@", "@SeriesInstanceUID@", "@PATH@", "@DESCRIPTION@" ]
         }
     ],
     "trigger-series": []  
@@ -34,9 +40,11 @@ if not(os.path.isdir(config["arrived"])):
 
 def RunExec( cmd, StudyInstanceUID, SeriesInstanceUID=None ):
     # run the array cmd, fill in the placeholder first
+    if not(SeriesInstanceUID == None):
+        SeriesInstanceUID = "/" + SeriesInstanceUID
     placeholders = {  
-        "@PATH@": "",
-        "@DESCRIPTION@": "",
+        "@PATH@": "%s/%s%s" % (config["raw"], StudyInstanceUID, SeriesInstanceUID),
+        "@DESCRIPTION@": "%s/%s/data.json" % (config["raw"], StudyInstanceUID),
         "@StudyInstanceUID@": StudyInstanceUID,
         "@SeriesInstanceUID@": SeriesInstanceUID
     }

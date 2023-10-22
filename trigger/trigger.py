@@ -42,14 +42,25 @@ def RunExec( cmd, StudyInstanceUID, SeriesInstanceUID=None ):
     # run the array cmd, fill in the placeholder first
     if SeriesInstanceUID is not None:
         SeriesInstanceUID = "/" + SeriesInstanceUID
+    else:
+        SeriesInstanceUID = ""
     placeholders = {  
         "@PATH@": "%s/%s%s" % (config["raw"], StudyInstanceUID, SeriesInstanceUID),
         "@DESCRIPTION@": "%s/%s/data.json" % (config["raw"], StudyInstanceUID),
         "@StudyInstanceUID@": StudyInstanceUID,
         "@SeriesInstanceUID@": SeriesInstanceUID
     }
-    cmd_replaced = [ [piece.replace(key, placeholders[key]) for key in placeholders] for piece in cmd]
-    subprocess.run(cmd_replaced)
+    cmd_replaced = []
+    for piece in cmd:
+        for key, value in placeholders.items():
+            piece = piece.replace(key, value)
+        cmd_replaced.append(piece)
+    print(str(datetime.now()) + ": " + " ".join(cmd_replaced))
+    try:
+        subprocess.run(cmd_replaced)
+    except subprocess.CalledProcessError as e:
+        print(e.output)
+        pass
 
 # we need to check the /data/site/.arrived folder for files with a last modification time 
 while True:
@@ -80,19 +91,19 @@ while True:
                 if type == "study":
                     if len(config["trigger-study"]) > 0:
                         for action in config["trigger-study"]:
-                            # now trigger the action
-                            print("Trigger the action now for type: %s, run %s" % (type, action["destination"]))
+                            print("Trigger action on %s, for type %s" % (type, action["type"]))
                             if "type" in action and "cmd" in action and action["type"] == "exec":
                                 RunExec(action["cmd"], StudyInstanceUID, SeriesInstanceUID)
                 elif type == "series":
                     if len(config["trigger-series"]) > 0:
                         for action in config["trigger-series"]:
-                            # now trigger the action
-                            print("Trigger the action now for type: %s, run %s" % (type, action["destination"]))
+                            print("Trigger action on %s, for type %s" % (type, action["type"]))
                             if "type" in action and "cmd" in action and action["type"] == "exec":
                                 RunExec(action["cmd"], StudyInstanceUID, SeriesInstanceUID)
-                # remove the .arrived file again
-                os.unlink(file)
-                pass
+                try:
+                    os.remove(file)
+                except OSError:
+                    print("Error: could not delete file %s after performing action" % (file))
+                    pass
     # be kind
     time.sleep(1)

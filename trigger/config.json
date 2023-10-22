@@ -11,7 +11,7 @@
         },
         {
             "type": "exec",
-            "cmd": [ "echo", "triggered this service", "${StudyInstanceUID}", "@PATH@", "@DESCRIPTION@" ]
+            "cmd": [ "echo", "triggered this service", "@StudyInstanceUID@", "@PATH@", "@DESCRIPTION@" ]
         }
     ],
     "trigger-series": []

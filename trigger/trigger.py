@@ -1,16 +1,27 @@
 #!/usr/bin/env python3
 from datetime import datetime
 import re, sys, os, time, json
+import subprocess
 
-# continuously check folder specified in config.json
+#
+# Continuously check .arrived folder specified in config.json
+# Folder is filled with incoming DICOM files (empty files, information is coded in filename only).
+# For example: A file for a study arrives, the .arrived file gets an updated modification time.
+#              The next file arrives for another study and that study file gets a new modification time.
+# The code below will check the folder for files that are older than 16 seconds. It will
+# assume, because no new file arrived, that the study is complete and trigger processing.
+#
 config = {
     "arrived": "",
     "timeout": 16,
-    "trigger-study": [{
-        "send": "http",
-        "destination": "http://localhost:11120"
-    }],
-    "trigger-series": []
+    "trigger-study": [
+        {
+            "type": "send",
+            "send": "http",
+            "destination": "http://localhost:11120"
+        }
+    ],
+    "trigger-series": []  
 }
 
 with open("config.json", "r") as f:
@@ -20,6 +31,17 @@ with open("config.json", "r") as f:
 if not(os.path.isdir(config["arrived"])):
     print("Error: the provided arrived path \"%s\" is not a directory." % (config["arrived"]))
     sys.exit(-1)
+
+def RunExec( cmd, StudyInstanceUID, SeriesInstanceUID=None ):
+    # run the array cmd, fill in the placeholder first
+    placeholders = {  
+        "@PATH@": "",
+        "@DESCRIPTION@": "",
+        "@StudyInstanceUID@": StudyInstanceUID,
+        "@SeriesInstanceUID@": SeriesInstanceUID
+    }
+    cmd_replaced = [ [piece.replace(key, placeholders[key]) for key in placeholders] for piece in cmd]
+    subprocess.run(cmd_replaced)
 
 # we need to check the /data/site/.arrived folder for files with a last modification time 
 while True:
@@ -38,6 +60,7 @@ while True:
             aec = x[2]
             dummy = x[3]
             StudyInstanceUID = x[4]
+            SeriesInstanceUID = None
             if type == "series":
                 SeriesInstanceUID = x[5]
  
@@ -50,12 +73,18 @@ while True:
                     if len(config["trigger-study"]) > 0:
                         for action in config["trigger-study"]:
                             # now trigger the action
-                             print("Trigger the action now for type: %s, run %s" % (type, action["destination"]))
+                            print("Trigger the action now for type: %s, run %s" % (type, action["destination"]))
+                            if "type" in action and "cmd" in action and action["type"] == "exec":
+                                RunExec(action["cmd"], StudyInstanceUID, SeriesInstanceUID)
                 elif type == "series":
                     if len(config["trigger-series"]) > 0:
                         for action in config["trigger-series"]:
                             # now trigger the action
-                             print("Trigger the action now for type: %s, run %s" % (type, action["destination"]))
+                            print("Trigger the action now for type: %s, run %s" % (type, action["destination"]))
+                            if "type" in action and "cmd" in action and action["type"] == "exec":
+                                RunExec(action["cmd"], StudyInstanceUID, SeriesInstanceUID)
                 # remove the .arrived file again
+                os.unlink(file)
                 pass
+    # be kind
     time.sleep(1)

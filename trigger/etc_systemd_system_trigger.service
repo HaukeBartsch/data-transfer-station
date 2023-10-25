@@ -6,8 +6,8 @@ After=multi-user.target
 TimeoutStartSec=0
 Restart=always
 ExecStart=/usr/bin/python3 /data/code/trigger/trigger.py >> /data/logs/trigger.log 2>&1
+User=root
+Group=root
 
 [Install]
 WantedBy=multi-user.target
-User=root
-Group=root

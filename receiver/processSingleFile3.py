@@ -723,7 +723,7 @@ class ProcessSingleFile(Daemon):
                                 except AttributeError:
                                         logging.error('Did not find Study or Series instance UID for arrivedfile')
                                         continue
-                                with open(arrivedfile, 'a'):
+                                with open(arrivedfile, 'a', 0o777):
                                         os.utime(arrivedfile, None)
                                 patientdir = datadir + '/site/participants'.encode('utf-8')
                                 #print 'DEBUG: patientdir: ', patientdir

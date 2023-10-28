@@ -29,6 +29,21 @@ systemctl status trigger.service
 
 If everythign works the status command should show no error messages.
 
+### Cleaning up
+
+Output of the trigger service will appear in /data/logs/trigger.log. In order to prevent the log folder from filling up the drive install a logrotate job such as (create /var/logrotate.d/trigger.conf):
+
+```
+/data/logs/*.log {
+    maxsize 100M
+    hourly
+    missingok
+    rotate 8
+    compress
+    notifempty
+    nocreate
+}
+```
 
 ### Docker
 

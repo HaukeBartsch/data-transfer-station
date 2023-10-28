@@ -56,11 +56,15 @@ def RunExec( cmd, StudyInstanceUID, SeriesInstanceUID=None ):
             piece = piece.replace(key, value)
         cmd_replaced.append(piece)
     print(str(datetime.now()) + ": " + " ".join(cmd_replaced))
+    p = None
     try:
-        subprocess.run(cmd_replaced)
+        p = subprocess.run(cmd_replaced, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     except subprocess.CalledProcessError as e:
         print(e.output)
         pass
+    print('exit status: ', p.returncode)
+    print('stdout: ', p.stdout.decode())
+    print('stderr: ', p.stderr.decode())
     print(str(datetime.now()) + ": processing finished")
 
 # we need to check the /data/site/.arrived folder for files with a last modification time 

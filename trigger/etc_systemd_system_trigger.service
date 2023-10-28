@@ -3,9 +3,9 @@ Description=DICOM Trigger Service
 After=multi-user.target
 
 [Service]
-TimeoutStartSec=0
+TimeoutStartSec=10
 Restart=always
-ExecStart=/usr/bin/python3 /data/code/trigger/trigger.py >> /data/logs/trigger.log 2>&1
+ExecStart=/data/code/trigger/trigger.py
 User=root
 Group=root
 

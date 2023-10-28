@@ -15,6 +15,7 @@ config = {
     "arrived": "",
     "raw": "",
     "archive": "",
+    "log": "/data/logs/trigger.log",
     "timeout": 16,
     "trigger-study": [
         {
@@ -35,8 +36,13 @@ with open(os.path.join(script_directory,"config.json"), "r") as f:
     config = json.load(f)
     f.close()
 
+import logging
+logging.basicConfig(filename=config["log"], encoding='utf-8', level=logging.DEBUG)
+logging.info("%s: Start trigger.py" % (str(datetime.now())))
+
+    
 if not(os.path.isdir(config["arrived"])):
-    print("Error: the provided arrived path \"%s\" is not a directory." % (config["arrived"]))
+    logging.error("Error: the provided arrived path \"%s\" is not a directory." % (config["arrived"]))
     sys.exit(-1)
 
 def RunExec( cmd, StudyInstanceUID, SeriesInstanceUID=None ):
@@ -56,20 +62,21 @@ def RunExec( cmd, StudyInstanceUID, SeriesInstanceUID=None ):
         for key, value in placeholders.items():
             piece = piece.replace(key, value)
         cmd_replaced.append(piece)
-    print("  " + str(datetime.now()) + ": " + " ".join(cmd_replaced))
+    logging.info("  " + str(datetime.now()) + ": " + " ".join(cmd_replaced))
     p = None
     try:
         p = subprocess.run(cmd_replaced, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     except subprocess.CalledProcessError as e:
-        print(e.output)
+        logging.error(e.output)
         pass
-    print('    exit status: ', p.returncode)
-    print('    stdout: ', p.stdout.decode())
-    print('    stderr: ', p.stderr.decode())
-    print(str(datetime.now()) + ": processing finished")
+    logging.info('    exit status: ', p.returncode)
+    logging.info('    stdout: ', p.stdout.decode())
+    logging.info('    stderr: ', p.stderr.decode())
+    logging.info(str(datetime.now()) + ": processing finished")
 
 # we need to check the /data/site/.arrived folder for files with a last modification time 
 while True:
+    logging.info('check ' + config["arrived"])
     obj = os.scandir(config["arrived"])
     for file in obj:
         if file.is_file():
@@ -97,26 +104,26 @@ while True:
                 if type == "study":
                     if len(config["trigger-study"]) > 0:
                         for action in config["trigger-study"]:
-                            print("Trigger action on %s, for type %s" % (type, action["type"]))
+                            logging.info("Trigger action on %s, for type %s" % (type, action["type"]))
                             if "type" in action and "cmd" in action and action["type"] == "exec":
                                 RunExec(action["cmd"], StudyInstanceUID, SeriesInstanceUID)
                             else:
-                                print("action not implemented, skip")
+                                logging.warning("action not implemented, skip")
                 elif type == "series":
                     if len(config["trigger-series"]) > 0:
                         for action in config["trigger-series"]:
-                            print("Trigger action on %s, for type %s" % (type, action["type"]))
+                            logging.info("Trigger action on %s, for type %s" % (type, action["type"]))
                             if "type" in action and "cmd" in action and action["type"] == "exec":
                                 RunExec(action["cmd"], StudyInstanceUID, SeriesInstanceUID)
                             else:
-                                print("action not implemented, skip")
+                                logging.warning("action not implemented, skip")
                 try:
                     os.remove(file)
                 except OSError:
-                    print("Error: could not delete file %s after performing action" % (file))
+                    logging.error("Error: could not delete file %s after performing action" % (file))
                     pass
             else:
-                print("File is too new [%d/%d], wait longer..." % (delta.total_seconds(),config["timeout"]))
+                logging.info("File is too new [%d/%d], wait longer..." % (delta.total_seconds(),config["timeout"]))
 
     # be kind
     time.sleep(4)

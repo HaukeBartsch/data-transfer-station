@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S python3 -u
 from datetime import datetime
 import re, sys, os, time, json, glob
 import subprocess

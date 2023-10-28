@@ -55,16 +55,16 @@ def RunExec( cmd, StudyInstanceUID, SeriesInstanceUID=None ):
         for key, value in placeholders.items():
             piece = piece.replace(key, value)
         cmd_replaced.append(piece)
-    print(str(datetime.now()) + ": " + " ".join(cmd_replaced))
+    print("  " + str(datetime.now()) + ": " + " ".join(cmd_replaced))
     p = None
     try:
         p = subprocess.run(cmd_replaced, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     except subprocess.CalledProcessError as e:
         print(e.output)
         pass
-    print('exit status: ', p.returncode)
-    print('stdout: ', p.stdout.decode())
-    print('stderr: ', p.stderr.decode())
+    print('    exit status: ', p.returncode)
+    print('    stdout: ', p.stdout.decode())
+    print('    stderr: ', p.stderr.decode())
     print(str(datetime.now()) + ": processing finished")
 
 # we need to check the /data/site/.arrived folder for files with a last modification time 
@@ -99,16 +99,23 @@ while True:
                             print("Trigger action on %s, for type %s" % (type, action["type"]))
                             if "type" in action and "cmd" in action and action["type"] == "exec":
                                 RunExec(action["cmd"], StudyInstanceUID, SeriesInstanceUID)
+                            else:
+                                print("action not implemented, skip")
                 elif type == "series":
                     if len(config["trigger-series"]) > 0:
                         for action in config["trigger-series"]:
                             print("Trigger action on %s, for type %s" % (type, action["type"]))
                             if "type" in action and "cmd" in action and action["type"] == "exec":
                                 RunExec(action["cmd"], StudyInstanceUID, SeriesInstanceUID)
+                            else:
+                                print("action not implemented, skip")
                 try:
                     os.remove(file)
                 except OSError:
                     print("Error: could not delete file %s after performing action" % (file))
                     pass
+            else:
+                print("File is too new [%d/%d], wait longer..." % (delta.total_seconds(),config["timeout"]))
+
     # be kind
-    time.sleep(1)
+    time.sleep(4)

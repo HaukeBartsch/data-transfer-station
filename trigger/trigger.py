@@ -51,9 +51,10 @@ def RunExec( cmd, StudyInstanceUID, SeriesInstanceUID=None ):
         SeriesInstanceUID = "/" + SeriesInstanceUID
     else:
         SeriesInstanceUID = ""
+    rawStudyInstanceUID=StudyInstanceUID.replace("scp_", "")
     placeholders = {  
         "@PATH@": "%s/%s%s" % (config["raw"], StudyInstanceUID, SeriesInstanceUID),
-        "@DESCRIPTION@": "%s/%s/data.json" % (config["raw"], StudyInstanceUID),
+        "@DESCRIPTION@": "%s/%s/data.json" % (config["raw"], rawStudyInstanceUID),
         "@StudyInstanceUID@": StudyInstanceUID,
         "@SeriesInstanceUID@": SeriesInstanceUID
     }

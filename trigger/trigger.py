@@ -69,9 +69,9 @@ def RunExec( cmd, StudyInstanceUID, SeriesInstanceUID=None ):
     except subprocess.CalledProcessError as e:
         logging.error(e.output)
         pass
-    logging.info('    exit status: ', p.returncode)
-    logging.info('    stdout: ', p.stdout.decode())
-    logging.info('    stderr: ', p.stderr.decode())
+    logging.info("    exit status: {a}".format(a=p.returncode))
+    logging.info("    stdout: {a}".format(a=json.dumps(p.stdout.decode('UTF-8'))))
+    logging.info("    stderr: {a}".format(a=json.dumps(p.stderr.decode('UTF-8')))
     logging.info(str(datetime.now()) + ": processing finished")
 
 # we need to check the /data/site/.arrived folder for files with a last modification time 

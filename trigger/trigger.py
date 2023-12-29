@@ -76,6 +76,10 @@ def RunExec( cmd, StudyInstanceUID, SeriesInstanceUID=None ):
 
 # we need to check the /data/site/.arrived folder for files with a last modification time 
 while True:
+    with open(os.path.join(script_directory,"config.json"), "r") as f:
+        config = json.load(f)
+        f.close()
+        
     logging.info('check ' + config["arrived"])
     obj = os.scandir(config["arrived"])
     for file in obj:

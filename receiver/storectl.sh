@@ -82,8 +82,7 @@ case $1 in
 	    --aetitle FIONA \
 	    --datadir ${ARRIVEDDIR} \
 	    --datapipe ${pipe} \
-	    --promiscuous \
-        --accept-all \
+	    --config-file /root/storescp.cfg Default \
         --write-xfer-same \
         --exec-on-reception "PleaseLookAtThis '#a' '#c' '#r' '#p' '#f'" \
         --sort-on-study-uid scp \

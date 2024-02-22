@@ -18,6 +18,8 @@ COPY processSingleFile3.py /root/
 COPY heartbeat.sh /root/
 COPY config.json /data/config/config.json
 COPY classifyRules.json /root/
+# exchange the default storescp with one that includes some private SOPClasses
+COPY storescp.cfg /root/storescp.cfg
 
 RUN mkdir -p /root/logs \
     && mkdir -p /root/.pids \

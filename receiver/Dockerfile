@@ -51,6 +51,8 @@ RUN cd /opt/dcmtk-3.6.7/ && cmake . && make storescp && cp /opt/dcmtk-3.6.7/bin/
 
 RUN \rm -rf /opt/dcmtk-3.6.7 && apt-get clean && apt-get autoremove --yes
 
+ENV DCMDICTPATH=/usr/share/libdcmtk17/dicom.dic
+
 WORKDIR /root/
 
 # we will listen to this port for incoming DICOMs (needs to match what is in /data/config/config.json)

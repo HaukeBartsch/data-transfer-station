@@ -78,7 +78,7 @@ case $1 in
         echo "`date`: we try to start storescp by: /usr/bin/nohup /root/storescpFIONA --fork --promiscuous --write-xfer-little --exec-on-reception \"$scriptfile '#a' '#c' '#r' '#p' '#f' &\" --sort-on-study-uid scp --output-directory \"$od\" $port &>${SERVERDIR}/logs/storescpd.log &" >> ${SERVERDIR}/logs/storescpd-start.log
 	# set the LD_LIBRARY_PATH to make this work on Ubuntu
 	export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/root/
-        DCMDICTPATH=/usr/share/libdcmtk17/dicom.dic /usr/bin/nohup /root/storescpFIONA -v --fork \
+        DCMDICTPATH=/usr/share/libdcmtk17/dicom.dic /usr/bin/nohup /root/storescpFIONA --fork \
 	    --aetitle FIONA \
 	    --datadir ${ARRIVEDDIR} \
 	    --datapipe ${pipe} \

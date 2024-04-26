@@ -1140,7 +1140,10 @@ if __name__ == "__main__":
 
         #log = logging.handlers.RotatingFileHandler(lfn, 'a', 10*1024*1024, backupCount=5)
         #log.setFormatter(logging.Formatter('%(levelname)s:%(asctime)s: %(message)s'))
-        logging.basicConfig(filename=lfn,format='%(levelname)s:%(asctime)s: %(message)s',level=logging.DEBUG)
+        logging.basicConfig(filename=lfn,
+                            format='%(asctime)s %(levelname)s %(message)s',
+                            datefmt='%Y-%m-%d %H:%M:%S',
+                            level=logging.INFO)
         daemon = ProcessSingleFile(pidfilename)
         daemon.init()
         if (sys.argv[1] != "send") and (len(sys.argv) > 1):

@@ -83,11 +83,12 @@ case $1 in
 	    --datadir ${ARRIVEDDIR} \
 	    --datapipe ${pipe} \
 	    --config-file /root/storescp.cfg Default \
-        --write-xfer-same \
-        --exec-on-reception "PleaseLookAtThis '#a' '#c' '#r' '#p' '#f'" \
-        --sort-on-study-uid scp \
-        --output-directory "$od" \
-        $port >> ${SERVERDIR}/logs/storescpd${projname}.log 2>&1  &
+            --write-xfer-same \
+	    --log-config /root/log_config.cfg \
+            --exec-on-reception "PleaseLookAtThis '#a' '#c' '#r' '#p' '#f'" \
+            --sort-on-study-uid scp \
+            --output-directory "$od" \
+            $port >> ${SERVERDIR}/logs/storescpd${projname}.log 2>&1  &
         pid=$!
         echo $pid > $pidfile
         ;;

@@ -20,6 +20,7 @@ COPY config.json /data/config/config.json
 COPY classifyRules.json /root/
 # exchange the default storescp with one that includes some private SOPClasses
 COPY storescp.cfg /root/storescp.cfg
+COPY log_config.cfg /root/log_config.cfg
 
 RUN mkdir -p /root/logs \
     && mkdir -p /root/.pids \

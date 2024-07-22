@@ -3,6 +3,7 @@
     "raw": "/data/site/raw",
     "archive": "/data/site/archive",
     "timeout": 16,
+    "log": "/data/logs/trigger.log",
     "trigger-study": [
         {
             "type": "send",

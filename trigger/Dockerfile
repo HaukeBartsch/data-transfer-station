@@ -4,9 +4,10 @@ FROM debian:bookworm-slim
 #   docker run --rm -v /tmp/archive:/data/site/archive -v /tmp/.arrived:/data/site/.arrived -v /tmp:/root/logs trigger
 #   storescu -v -aec FIONA -aet FIONA -nh +r +sd localhost 11112 hackathon-dataset 
 
-RUN apt update && apt install -y procps net-tools jq dcmtk cron wget cmake gcc g++ python3 python3-pip systemd
+RUN apt update && apt install -y procps net-tools jq dcmtk cron wget cmake gcc g++ python3 python3-pip systemd apache2
 
 COPY trigger.py /trigger.py
 COPY config.json /config.json
+COPY log_viewer/* /var/www/html/
 
 CMD [ "/trigger.py", "config.json" ]

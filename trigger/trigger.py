@@ -76,7 +76,7 @@ def RunExec( cmd, StudyInstanceUID, SeriesInstanceUID=None ):
         pass
     logging.info("    exit status: {a}".format(a=p.returncode))
     logging.info("    stdout: {a}".format(a=json.dumps(p.stdout.decode('UTF-8'))))
-    logging.info("    stderr: {a}".format(a=json.dumps(p.stderr.decode('UTF-8')))
+    logging.info("    stderr: {a}".format(a=json.dumps(p.stderr.decode('UTF-8'))))
     logging.info(str(datetime.now()) + ": processing finished")
 
 # we need to check the /data/site/.arrived folder for files with a last modification time 

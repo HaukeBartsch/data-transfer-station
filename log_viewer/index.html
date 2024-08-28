@@ -368,126 +368,29 @@
               <tr>
                 <th scope="col">#</th>
                 <th scope="col">Date/Time</th>
-                <th scope="col">Originator</th>
-                <th scope="col">Message</th>
                 <th scope="col">Type</th>
+                <th scope="col">Message</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td>1,001</td>
-                <td>random</td>
-                <td>data</td>
-                <td>placeholder</td>
-                <td>text</td>
-              </tr>
-              <tr>
-                <td>1,002</td>
-                <td>placeholder</td>
-                <td>irrelevant</td>
-                <td>visual</td>
-                <td>layout</td>
-              </tr>
-              <tr>
-                <td>1,003</td>
-                <td>data</td>
-                <td>rich</td>
-                <td>dashboard</td>
-                <td>tabular</td>
-              </tr>
-              <tr>
-                <td>1,003</td>
-                <td>information</td>
-                <td>placeholder</td>
-                <td>illustrative</td>
-                <td>data</td>
-              </tr>
-              <tr>
-                <td>1,004</td>
-                <td>text</td>
-                <td>random</td>
-                <td>layout</td>
-                <td>dashboard</td>
-              </tr>
-              <tr>
-                <td>1,005</td>
-                <td>dashboard</td>
-                <td>irrelevant</td>
-                <td>text</td>
-                <td>placeholder</td>
-              </tr>
-              <tr>
-                <td>1,006</td>
-                <td>dashboard</td>
-                <td>illustrative</td>
-                <td>rich</td>
-                <td>data</td>
-              </tr>
-              <tr>
-                <td>1,007</td>
-                <td>placeholder</td>
-                <td>tabular</td>
-                <td>information</td>
-                <td>irrelevant</td>
-              </tr>
-              <tr>
-                <td>1,008</td>
-                <td>random</td>
-                <td>data</td>
-                <td>placeholder</td>
-                <td>text</td>
-              </tr>
-              <tr>
-                <td>1,009</td>
-                <td>placeholder</td>
-                <td>irrelevant</td>
-                <td>visual</td>
-                <td>layout</td>
-              </tr>
-              <tr>
-                <td>1,010</td>
-                <td>data</td>
-                <td>rich</td>
-                <td>dashboard</td>
-                <td>tabular</td>
-              </tr>
-              <tr>
-                <td>1,011</td>
-                <td>information</td>
-                <td>placeholder</td>
-                <td>illustrative</td>
-                <td>data</td>
-              </tr>
-              <tr>
-                <td>1,012</td>
-                <td>text</td>
-                <td>placeholder</td>
-                <td>layout</td>
-                <td>dashboard</td>
-              </tr>
-              <tr>
-                <td>1,013</td>
-                <td>dashboard</td>
-                <td>irrelevant</td>
-                <td>text</td>
-                <td>visual</td>
-              </tr>
-              <tr>
-                <td>1,014</td>
-                <td>dashboard</td>
-                <td>illustrative</td>
-                <td>rich</td>
-                <td>data</td>
-              </tr>
-              <tr>
-                <td>1,015</td>
-                <td>random</td>
-                <td>tabular</td>
-                <td>information</td>
-                <td>text</td>
-              </tr>
+            <tbody id="log_table">
             </tbody>
           </table>
+	      <!-- waiting wheel -->
+    <div>
+      <section class="wrapper dark" id="waiting_wheel" style="z-index: 1000; display: none;">
+        <div class="spinner">
+          <i></i>
+          <i></i>
+          <i></i>
+          <i></i>
+          <i></i>
+          <i></i>
+          <i></i>
+        </div>
+      </section>
+    </div>
+  
+
         </div>
       </div>
       <div class="tab-pane container fade" id="settings">
@@ -496,19 +399,25 @@
         </div>      
         <form>
           <div class="mb-3">
-            <label for="exampleInputEmail1" class="form-label">Email address</label>
-            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-            <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+            <label for="arrived_folder" class="form-label">Arrived folder</label>
+            <input type="text" class="form-control" id="arrived_folder" aria-describedby="arrived_folder_Help" disabled>
+            <div id="arrived_folder_Help" class="form-text">The folder the receiver is using to store notifications for trigger.</div>
           </div>
           <div class="mb-3">
-            <label for="exampleInputPassword1" class="form-label">Password</label>
-            <input type="password" class="form-control" id="exampleInputPassword1">
+            <label for="log_folder" class="form-label">Log folder</label>
+            <input type="text" class="form-control" id="log_folder" aria-describedby="log_folder_Help" disabled>
+            <div id="log_folder_Help" class="form-text">The folder in which all logs are stored.</div>
           </div>
-          <div class="mb-3 form-check">
-            <input type="checkbox" class="form-check-input" id="exampleCheck1">
-            <label class="form-check-label" for="exampleCheck1">Check me out</label>
+          <div class="mb-3">
+            <label for="timeout_value" class="form-label">Timeout value</label>
+            <input type="text" class="form-control" id="timeout_value" aria-describedby="timeout_Help" disabled>
+            <div id="timeout_Help" class="form-text">After this many seconds the system will assume that all data arrived and start processing.</div>
           </div>
-          <button type="submit" class="btn btn-primary">Submit</button>
+          <div class="mb-3">
+            <label for="alife_value" class="form-label">Receiver alife?</label>
+            <input type="text" class="form-control" id="alife_value" aria-describedby="alife_Help" disabled>
+            <div id="alife_Help" class="form-text">Check if the heartbeat detects that the receiver is working.</div>
+          </div>
         </form>
       </div>
     </div>
@@ -516,6 +425,10 @@
   </div>
 </div>
 <script src="/js/bootstrap.bundle.min.js"></script>
+<script src="/js/chart.umd.js"></script>
+<script src="/js/dashboard.js"></script>
+<script src="/js/jquery-3.7.1.min.js"></script>
+<script src="/js/all.js"></script>
 
-<script src="/js/chart.umd.js"></script><script src="/js/dashboard.js"></script></body>
+</body>
 </html>

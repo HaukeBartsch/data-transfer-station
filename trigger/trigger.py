@@ -25,7 +25,7 @@ config = {
         },
         {
             "type": "exec",
-            "cmd": [ "echo", "triggered this service", "@StudyInstanceUID@", "@SeriesInstanceUID@", "@PATH@", "@DESCRIPTION@" ]
+            "cmd": [ "echo", "@StudyInstanceUID@", "@SeriesInstanceUID@", "@PATH@", "@DESCRIPTION@" ]
         }
     ],
     "trigger-series": []  
@@ -39,11 +39,10 @@ with open(os.path.join(script_directory,"config.json"), "r") as f:
 import logging
 logging.basicConfig(filename=config["log"],
                     encoding='utf-8',
-                    level=logging.INFO,
+                    level=logging.DEBUG,
                     format='%(asctime)s %(levelname)s %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S')
-logging.info("%s: Start trigger.py" % (str(datetime.now())))
-
+logging.info("Start trigger.py")
     
 if not(os.path.isdir(config["arrived"])):
     logging.error("Error: the provided arrived path \"%s\" is not a directory." % (config["arrived"]))
@@ -67,17 +66,20 @@ def RunExec( cmd, StudyInstanceUID, SeriesInstanceUID=None ):
         for key, value in placeholders.items():
             piece = piece.replace(key, value)
         cmd_replaced.append(piece)
-    logging.info("  " + str(datetime.now()) + ": " + " ".join(cmd_replaced))
+    # logging.info(" ".join(cmd_replaced))
     p = None
     try:
         p = subprocess.run(cmd_replaced, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     except subprocess.CalledProcessError as e:
         logging.error(e.output)
         pass
-    logging.info("    exit status: {a}".format(a=p.returncode))
-    logging.info("    stdout: {a}".format(a=json.dumps(p.stdout.decode('UTF-8'))))
-    logging.info("    stderr: {a}".format(a=json.dumps(p.stderr.decode('UTF-8'))))
-    logging.info(str(datetime.now()) + ": processing finished")
+    log_message = {
+        'command line': " ".join(cmd_replaced),
+        'standard out': "{a}".format(a=json.dumps(p.stdout.decode('UTF-8'))),
+        'standard error': "{a}".format(a=json.dumps(p.stderr.decode('UTF-8'))),
+        'exit code': "{a}".format(a=p.returncode)
+    }
+    logging.info("%s" % (json.dumps(log_message)))
 
 # we need to check the /data/site/.arrived folder for files with a last modification time 
 while True:
@@ -85,7 +87,7 @@ while True:
         config = json.load(f)
         f.close()
         
-    logging.info('check ' + config["arrived"])
+    # logging.info('check ' + config["arrived"])
     obj = os.scandir(config["arrived"])
     for file in obj:
         if file.is_file():
@@ -117,7 +119,7 @@ while True:
                             if "type" in action and "cmd" in action and action["type"] == "exec":
                                 RunExec(action["cmd"], StudyInstanceUID, SeriesInstanceUID)
                             else:
-                                logging.warning("action not implemented, skip")
+                                logging.debug("action \"%s\" not implemented, skip" % (json.dumps(action)))
                 elif type == "series":
                     if len(config["trigger-series"]) > 0:
                         for action in config["trigger-series"]:
@@ -125,7 +127,7 @@ while True:
                             if "type" in action and "cmd" in action and action["type"] == "exec":
                                 RunExec(action["cmd"], StudyInstanceUID, SeriesInstanceUID)
                             else:
-                                logging.warning("action not implemented, skip")
+                                logging.debug("action \"%s\" not implemented, skip" % (json.dumps(action)))
                 try:
                     os.remove(file)
                 except OSError:

@@ -8,6 +8,8 @@ RUN apt update && apt install -y procps net-tools jq dcmtk cron wget cmake gcc g
 
 COPY trigger.py /trigger.py
 COPY config.json /config.json
-COPY log_viewer/* /var/www/html/
+COPY --chown=www-data log_viewer/ /var/www/html/
+
+RUN mkdir -p /data/logs/ && touch /data/logs/trigger.log
 
 CMD [ "/trigger.py", "config.json" ]

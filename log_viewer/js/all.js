@@ -38,7 +38,7 @@ jQuery(document).ready(function() {
 			content = JSON.parse(rest);
 			for(var j = 0; j < Object.keys(content).length; j++) {
 			    var name = Object.keys(content)[j];
-			    txt += "<h5>" + name + "</h5><p>" + ((content['name'] == "\"\"")?"empty":content[name]) + "</p>";
+			    txt += "<h5>" + name + "</h5><p>" + ((content[name] == "\"\"")?"empty":content[name]) + "</p>";
 			}
 		    } catch(e) {
 			console.log("could not parse as json" + rest);

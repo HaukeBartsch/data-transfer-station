@@ -22,3 +22,12 @@ Listens for DICOM requests on a port and stores the images in a disk location.
 ## Website
 
 The website code to show the data and to configure the system and to report on processing logs.
+
+## Setup
+
+The "Makefile" provides instructions on how to setup and check a virtual machine environment running DTS.
+
+```{bash}
+cd data-transfer-station
+make
+```

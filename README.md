@@ -1,17 +1,17 @@
 # Data transfer station for image AI in the hospital
 
-A self-hosted technical solution for image exchange and image processing that integrates with hospital Picture Archive and Communication Systems (PACS) using industry standards.
+A self-hosted digital platform for the secure image exchange and processing integrated with hospital systems using industry standards.
 
 ### Technical details
 
-A DICOM aware system that receives medical images from PACS and triggers AI processing pipelines including 
+A DICOM aware platform that allows for in-house image processing using AI. Receives medical images from PACS and can trigger AI processing pipelines including 
 routing of incoming and outgoing images on the network. 
 
-If you run this data transfer station you will be able to participate on a hospital network as a
-fully automated medical workstation. Radiologists will be sending you a case, processing
+With Data Transfer Station you participate in the hospital network as a
+fully automated medical service. Radiologists will be sending you an exam, processing
 is triggered to generate a report and that report bounces back to the sending system.
 
-In order to setup this environment we require a docker/docker-compose like environment.
+The setup describes the roll-out in a docker/docker-compose environment.
 
 Features:
 
@@ -20,7 +20,7 @@ Features:
 
 ## Data receiver
 
-A component that interfaces with PACS. Listens for DICOM requests on a port and stores the images in a disk location.
+Interfaces with the Picture Archive and Communication System (PACS). Listens for DICOM requests on a port and stores the images temporarily.
 
 ## Website
 
@@ -28,7 +28,7 @@ Used to debug processing steps, shows incoming data, error messages and processi
 
 ## Setup
 
-The Makefile automates procedures on setup and to ensure system compliance. Instructions are provided on how to setup and check a virtual machine environment running DTS.
+The Makefile automates procedures for setup and ensures system compliance. Instructions are provided on how to setup and check copmliance for DTS.
 
 ```{bash}
 cd data-transfer-station

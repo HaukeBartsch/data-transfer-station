@@ -5,7 +5,7 @@ SHELL := /bin/bash
 
 
 .PHONY: all
-all: run-as-root receiver-exists receiver-running trigger-running
+all: run-as-root make-secure receiver-exists receiver-running trigger-running
 
 
 #
@@ -24,6 +24,13 @@ run-as-root :
 	fi
 	@echo "You are root, continue with checking...";
 
+make-secure:
+        @if crontab -l | grep -q shutdown; then echo "check for scheduled reboots, ok"; else echo "Setup a regular reboot in crontab with @weekly /sbin/shutdown -r now."; exit 1; fi
+        @if fail2ban-client status 2>&1 > /dev/null; then echo "check for fail2ban service, ok"; else echo "Install fail2ban with apt install fail2ban."; exit 1; fi
+        systemctl enable fail2ban
+        systemctl start fail2ban
+        @if systemctl status unattended-upgrades.service 2> /dev/null; then echo "check for unattended-upgrades, ok"; else echo "Install unattended-upgrades to install security relevant upgrades"; exit 1; fi
+        systemctl status unattended-upgrades
 
 receiver-exists:
 	$(if $(shell podman images -q "receiver" 2> /dev/null),$(info check for receiver container, ok),$(error Please install receiver with cd receiver; podman build -t receiver -f Dockerfile))

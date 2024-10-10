@@ -1,8 +1,12 @@
 # Build, run and test
 
+The Dockerfile contains the build instructions for the receiver.
+
 ```{bash}
    docker build -t receiver -f Dockerfile .
 ```
+
+Start the docker container 'receiver' and connect its port 11112 to the outside. All received data will be stored in  /tmp/site/archive/. This location is cleared after a regular reboot (suggested interval is every week, add '@weekly /sbin/shutdown -r now' to your crontab).
 
 ```{bash}
    docker run --rm -d -p 11112:11112 -v /tmp/site/archive:/data/site/archive \
@@ -10,6 +14,7 @@
               -v /tmp/site/.arrived:/data/site/.arrived \
 	      -v /tmp:/root/logs receiver
 ```
+
 
 ```{bash}
    storescu -v -aec FIONA -aet FIONA -nh +r +sd localhost 11112 <some location with DICOM files>

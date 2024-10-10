@@ -1,6 +1,6 @@
 # Build, run and test
 
-The Dockerfile contains the build instructions for the receiver.
+The Dockerfile contains the build instructions for the receiver. The file has been tested with podman so its possible to run it with reduced permissions.
 
 ```{bash}
    docker build -t receiver -f Dockerfile .

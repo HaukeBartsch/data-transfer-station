@@ -17,8 +17,12 @@
 
 # Setup as a system service (Linux only)
 
+For DTS the receiver is setup as a system service using systemd. The Makefile in the root directory will perform the three steps below.
+
 ```{bash}
+# copy systemd file to control the service
 cp etc_systemd_system_docker.receiver.service /etc/systemd/system/docker.receiver.service
+# enable the start the service, after a reboot the service will persist now
 systemctl enable docker.receiver.service
 systemctl start docker.receiver.service  
 ```

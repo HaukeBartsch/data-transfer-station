@@ -22,11 +22,11 @@ Features:
 
 Interfaces with the Picture Archive and Communication System (PACS). Listens for DICOM requests on a port and stores the images temporarily.
 
-## Website
+## Tracking data processing
 
 Used to debug processing steps, shows incoming data, error messages and processing logs. Used as well for the configuration of the system.
 
-## Setup
+## System setup
 
 The Makefile automates procedures for setup and ensures system compliance. Instructions are provided on how to setup and check copmliance for DTS.
 

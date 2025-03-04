@@ -24,6 +24,8 @@ jQuery(document).ready(function() {
 				"Triggered by: " + JSON.stringify(data['Streams'][i].trigger) + "<br>" +
 				"Destination:" + JSON.stringify(data['Streams'][i].destination) + "</dd>";
 		}
+		txt += "</dl>";
+		jQuery("#stream-info").append(txt);
 	});
 	
 	

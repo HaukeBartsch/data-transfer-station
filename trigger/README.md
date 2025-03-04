@@ -47,7 +47,9 @@ Output of the trigger service will appear in /data/logs/trigger.log. In order to
 
 ### Docker
 
-You can create a docker container with the trigger. This will work fine for simple commands. But because the command is running inside your container you also need to install your program in Dockerfile. If you don't want to do this step, use the above version outside of a container.
+You can create a docker container with the trigger. This will work fine for simple commands. But because the command is running inside your container you also need to install your program in Dockerfile. 
+
+It is strongly suggested that you use the above systemd service command directly instead of a conterized version.
 
 Build the container:
 

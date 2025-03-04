@@ -4,16 +4,37 @@
     "archive": "/data/site/archive",
     "timeout": 16,
     "log": "/data/logs/trigger.log",
-    "trigger-study": [
+    "Streams": [
         {
-            "type": "send",
-            "send": "http",
-            "destination": "http://localhost:11120"
-        },
-        {
-            "type": "exec",
-            "cmd": [ "echo", "triggered this service", "@StudyInstanceUID@", "@PATH@", "@DESCRIPTION@" ]
+            "log": "/data/logs/trigger.log",
+            "name": "AIcore",
+            "description": "AIcore",
+            "trigger": {
+                "AETitleCalled": "^AICORE1$",
+                "AETitleCaller": ".*"
+            },
+            "destination": [
+                {
+                    "AETitle": "FIONA",
+                    "IP": "fiona.ihelse.net",
+                    "PORT": "7280",
+                    "filter": [
+                        { "SeriesDescription": "*" }
+                    ]
+                }
+            ],
+            "trigger-study": [
+                {
+                    "type": "send",
+                    "send": "http",
+                    "destination": "http://localhost:11120"
+                },
+                {
+                    "type": "exec",
+                    "cmd": [ "echo", "triggered this service", "@StudyInstanceUID@", "@PATH@", "@DESCRIPTION@" ]
+                }
+            ],
+            "trigger-series": []        
         }
-    ],
-    "trigger-series": []
+    ]
 }

@@ -1,3 +1,6 @@
+#
+# DO NOT USE IN PRODUCTION
+# (use etc_systemd_system_trigger.service instead)
 [Unit]
 Description=DICOM Trigger Service
 After=docker.receiver.service

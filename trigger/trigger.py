@@ -39,16 +39,16 @@ with open(os.path.join(script_directory,"config.json"), "r") as f:
 import logging
 logging.basicConfig(filename=config["log"],
                     encoding='utf-8',
-                    level=logging.DEBUG,
+                    level=logging.UBFI,
                     format='%(asctime)s %(levelname)s %(message)s',
-                    datefmt='%Y-%m-%d %H:%M:%S')
+                    datefmt='%Y-%m-%d %H:%M:%S:%f:')
 logging.info("Start trigger.py")
     
 if not(os.path.isdir(config["arrived"])):
     logging.error("Error: the provided arrived path \"%s\" is not a directory." % (config["arrived"]))
     sys.exit(-1)
 
-def RunExec( cmd, StudyInstanceUID, SeriesInstanceUID=None ):
+def RunExec( cmd, destination, StudyInstanceUID, SeriesInstanceUID=None, StreamName=None ):
     # run the array cmd, fill in the placeholder first
     if SeriesInstanceUID is not None:
         SeriesInstanceUID = "/" + SeriesInstanceUID
@@ -59,7 +59,9 @@ def RunExec( cmd, StudyInstanceUID, SeriesInstanceUID=None ):
         "@PATH@": "%s/%s%s" % (config["raw"], StudyInstanceUID, SeriesInstanceUID),
         "@DESCRIPTION@": "%s/%s/data.json" % (config["raw"], rawStudyInstanceUID),
         "@StudyInstanceUID@": StudyInstanceUID,
-        "@SeriesInstanceUID@": SeriesInstanceUID
+        "@SeriesInstanceUID@": SeriesInstanceUID,
+        "@destination@": destination,
+        "@StreamName@": StreamName
     }
     cmd_replaced = []
     for piece in cmd:
@@ -99,8 +101,8 @@ while True:
             if x == None:
                 x = re.match(re_study, file.name)
                 type = "study"
-            aet = x[1]
-            aec = x[2]
+            aet = x[1] # AETitleCaller
+            aec = x[2] # AETitleCalled
             dummy = x[3]
             StudyInstanceUID = x[4]
             SeriesInstanceUID = None
@@ -112,22 +114,58 @@ while True:
             now = datetime.now()
             delta = now - t
             if delta.total_seconds() > config["timeout"]:
-                if type == "study":
-                    if len(config["trigger-study"]) > 0:
-                        for action in config["trigger-study"]:
-                            logging.info("Trigger action on %s, for type %s" % (type, action["type"]))
-                            if "type" in action and "cmd" in action and action["type"] == "exec":
-                                RunExec(action["cmd"], StudyInstanceUID, SeriesInstanceUID)
-                            else:
-                                logging.debug("action \"%s\" not implemented, skip" % (json.dumps(action)))
-                elif type == "series":
-                    if len(config["trigger-series"]) > 0:
-                        for action in config["trigger-series"]:
-                            logging.info("Trigger action on %s, for type %s" % (type, action["type"]))
-                            if "type" in action and "cmd" in action and action["type"] == "exec":
-                                RunExec(action["cmd"], StudyInstanceUID, SeriesInstanceUID)
-                            else:
-                                logging.debug("action \"%s\" not implemented, skip" % (json.dumps(action)))
+                for stream in config["Streams"]:
+                    target = stream["trigger"]
+                    # is the current stream addressed?
+                    fits = True
+                    for key, value in target.items():
+                        # check if the regular expression is ok for this rule
+                        if key == "AETitleCalled":
+                            try:
+                                if not re.match(value, aec):
+                                    fits = False
+                            except:
+                                logging.error("    Warning: error using regular expression %s in rule %s, key: %s" % (value,stream['name'],key))
+                                pass
+                        elif key == "AETitleCaller":
+                            try:
+                                if not re.match(value, aet):
+                                    fits = False
+                            except:
+                                logging.error("    Warning: error using regular expression %s in rule %s, key: %s" % (value,stream['name'],key))
+                                pass                                    
+                        else:
+                            logging.error("Unknown trigger key in config.json: %s with value %s. Ignored." % (key, value))
+                    if not fits:
+                        #logging.info("non-matching stream %s for %s" % (stream["name"], json.dumps(target)))
+                        continue
+                    trigger_study = stream["trigger-study"]
+                    trigger_series = stream["trigger-series"]
+                    destination = "[]" # default could be entered here as research PACS
+                    if "destination" in stream:
+                        destination = json.dumps(stream["destination"])
+                        destination = destination.replace('"', '\\"')
+                    # get a new logger
+                    logging.info("Matching stream %s for %s" % (stream["name"], json.dumps(target)))
+                                            
+                    if type == "study":
+                        if len(trigger_study) > 0:
+                            logging.info("trigger study level (stream %s)" % (stream["name"]))
+                            for action in trigger_study:
+                                if "type" in action and "cmd" in action and action["type"] == "exec":
+                                    logging.info("trigger action %s on %s, for type %s" % (stream["name"], type, action["type"]))
+                                    RunExec(action["cmd"], destination, StudyInstanceUID, SeriesInstanceUID, stream["name"])
+                                else:
+                                    logging.warning("%s: action not implemented, skip" % (stream["name"]))
+                    elif type == "series":
+                        if len(trigger_series) > 0:
+                            logging.info("trigger series level (stream %s)" % (stream["name"]))
+                            for action in trigger_series:
+                                if "type" in action and "cmd" in action and action["type"] == "exec":
+                                    logging.info("trigger action %s on %s, for type %s" % (stream["name"], type, action["type"]))
+                                    RunExec(action["cmd"], destination, StudyInstanceUID, SeriesInstanceUID, stream["name"])
+                                else:
+                                    logging.warning("%s: action not implemented, skip" % (stream["name"]))
                 try:
                     os.remove(file)
                 except OSError:

@@ -1,4 +1,11 @@
 FROM debian:bookworm-slim
+#
+# DO NOT USE THIS IN PRODUCTION
+# =============================
+# Instead run the trigger service as a systemd service directly (no docker).
+# One of the main purposes of this service is to startup container services on demand. 
+# This is more difficult from inside a container. Better to run the service on the host.
+#
 # Build, run and test:
 #   docker build -t trigger -f Dockerfile .
 #   docker run --rm -v /tmp/archive:/data/site/archive -v /tmp/.arrived:/data/site/.arrived -v /tmp:/root/logs trigger

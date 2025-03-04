@@ -15,6 +15,15 @@ jQuery(document).ready(function() {
 		if (typeof data['timeout'] != 'undefined') {
 			jQuery('#timeout_value').val(data['timeout']);
 		}
+		jQuery("#stream-info").children().remove();
+		jQuery("#stream-info").append("<p>Number of configured streams: " + data['Streams'].length + "</p>");
+		var txt = "<dl>";
+		for (var i = 0; i < data['Streams'].length; i++) {
+			txt += "<dt>" + data['Streams'][i].name + "</dt>";
+			txt += "<dd>" + data['Streams'][i].description + "<br>" +
+				"Triggered by: " + JSON.stringify(data['Streams'][i].trigger) + "<br>" +
+				"Destination:" + JSON.stringify(data['Streams'][i].destination) + "</dd>";
+		}
 	});
 	
 	

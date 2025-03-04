@@ -1,5 +1,7 @@
 <?php
 
+$max_log_lines = 100;
+
 // the log reader
 $action = "";
 if (isset($_GET['action'])) {
@@ -43,9 +45,12 @@ if ($action == "summary") {
    // filter by "triggered this service"
    $summary["trigger_study"] = array();
    foreach ($data as $line) {
-     if (str_contains($line, "triggered service")) {
-        $summary["trigger_study"][] = $line;
-     }
+      if (count($summary["trigger_study"]) > $max_log_lines) {
+         break;
+      }
+      if (str_contains($line, "triggered service")) {
+         $summary["trigger_study"][] = $line;
+      }
    }
 
    echo(json_encode($summary));

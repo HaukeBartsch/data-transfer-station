@@ -39,7 +39,7 @@ with open(os.path.join(script_directory,"config.json"), "r") as f:
 import logging
 logging.basicConfig(filename=config["log"],
                     encoding='utf-8',
-                    level=logging.UBFI,
+                    level=logging.DEBUG,
                     format='%(asctime)s %(levelname)s %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S:%f:')
 logging.info("Start trigger.py")

@@ -15,6 +15,20 @@ jQuery(document).ready(function() {
 		if (typeof data['timeout'] != 'undefined') {
 			jQuery('#timeout_value').val(data['timeout']);
 		}
+		if (typeof data['logging'].length > 0) {
+			if (typeof data['logging'][0].logging_server_name != "undefined") {
+				jQuery('#logging_server_name').val(data['logging'][0].logging_server_name);
+			}
+			if (typeof data['logging'][0].logging_server_port != "undefined") {
+				jQuery('#logging_server_port').val(data['logging'][0].logging_server_port);
+			}
+			if (typeof data['logging'][0].logging_server_dbname != "undefined") {
+				jQuery('#logging_server_dbname').val(data['logging'][0].logging_server_dbname);
+			}
+			if (typeof data['logging'][0].logging_server_driver != "undefined") {
+				jQuery('#logging_server_driver').val(data['logging'][0].logging_server_driver);
+			}
+		}
 		jQuery("#stream-info").children().remove();
 		jQuery("#stream-info").append("<p>Number of configured streams: " + data['Streams'].length + "</p>");
 		var txt = "<dl>";

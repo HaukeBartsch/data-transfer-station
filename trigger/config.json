@@ -4,6 +4,9 @@
     "archive": "/data/site/archive",
     "timeout": 16,
     "log": "/data/logs/trigger.log",
+    "logging": [
+        { "host": "localhost", "port": 3306, "dbname": "", "driver": "" }
+    ],
     "Streams": [
         {
             "log": "/data/logs/trigger.log",

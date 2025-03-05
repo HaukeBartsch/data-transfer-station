@@ -418,8 +418,31 @@
             <input type="text" class="form-control" id="alife_value" aria-describedby="alife_Help" disabled>
             <div id="alife_Help" class="form-text">Check if the heartbeat detects that the receiver is working.</div>
           </div>
+          <hr>
+          <h5>Logging</h5>
           <div class="mb-3">
-            <h5>Configured streams</h5>
+            <label for="logging_server_name" class="form-label">External logging server name</label>
+            <input type="text" class="form-control" id="logging_server_name" aria-describedby="loggingserver_name_Help" disabled>
+            <div id="loggingserver_name_Help" class="form-text">Server name for SQL connection (e.g. localhost).</div>
+          </div>
+          <div class="mb-3">
+            <label for="logging_server_port" class="form-label">External logging server port</label>
+            <input type="number" class="form-control" id="logging_server_port" aria-describedby="loggingserver_port_Help" disabled>
+            <div id="loggingserver_port_Help" class="form-text">Port for SQL connection (e.g. 1234).</div>
+          </div>
+          <div class="mb-3">
+            <label for="logging_server_dbname" class="form-label">External logging database name</label>
+            <input type="text" class="form-control" id="logging_server_dbname" aria-describedby="loggingserver_dbname_Help" disabled>
+            <div id="loggingserver_dbname_Help" class="form-text">Database name (dts).</div>
+          </div>
+          <div class="mb-3">
+            <label for="logging_server_driver" class="form-label">External logging driver</label>
+            <input type="number" class="form-control" id="logging_server_driver" aria-describedby="loggingserver_driver_Help" disabled>
+            <div id="loggingserver_driver_Help" class="form-text">Driver number for SQL connection (e.g. 17).</div>
+          </div>
+          <hr>
+          <h5>Configured streams</h5>
+          <div class="mb-3">
             <div id="stream-info"></div>
           </div>
         </form>

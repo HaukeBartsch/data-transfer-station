@@ -2,6 +2,7 @@
 from datetime import datetime
 import re, sys, os, time, json, glob
 import subprocess
+import BackendLogging
 
 #
 # Continuously check .arrived folder specified in config.json
@@ -17,18 +18,42 @@ config = {
     "archive": "",
     "log": "/data/logs/trigger.log",
     "timeout": 16,
-    "trigger-study": [
-        {
-            "type": "send",
-            "send": "http",
-            "destination": "http://localhost:11120"
-        },
-        {
-            "type": "exec",
-            "cmd": [ "echo", "@StudyInstanceUID@", "@SeriesInstanceUID@", "@PATH@", "@DESCRIPTION@" ]
-        }
+    "logging": [
+        { "host": "localhost", "port": 3306, "dbname": "", "driver": "" }
     ],
-    "trigger-series": []  
+    "Streams": [
+        {
+            "log": "/data/logs/trigger.log",
+            "name": "AIcore",
+            "description": "AIcore",
+            "trigger": {
+                "AETitleCalled": "^AICORE1$",
+                "AETitleCaller": ".*"
+            },
+            "destination": [
+                {
+                    "AETitle": "ME",
+                    "IP": "localhost",
+                    "PORT": "1234",
+                    "filter": [
+                        { "SeriesDescription": "*" }
+                    ]
+                }
+            ],
+            "trigger-study": [
+                {
+                    "type": "send",
+                    "send": "http",
+                    "destination": "http://localhost:11120"
+                },
+                {
+                    "type": "exec",
+                    "cmd": [ "echo", "@StudyInstanceUID@", "@SeriesInstanceUID@", "@PATH@", "@DESCRIPTION@" ]
+                }
+            ],
+            "trigger-series": []
+        }
+    ]
 }
 
 script_directory = os.path.dirname(os.path.abspath(sys.argv[0]))

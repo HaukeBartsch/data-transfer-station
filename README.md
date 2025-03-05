@@ -20,7 +20,11 @@ Features:
 
 ## Data receiver
 
-Interfaces with the Picture Archive and Communication System (PACS). Listens for DICOM requests on a port and stores the images temporarily.
+Interfaces with the Picture Archive and Communication System (PACS). Listens for DICOM requests on a port and stores the images temporarily. This component is run using a docker container.
+
+## Processing trigger
+
+For every incoming dataset a ruleset will qualify a processing stream. The processing is triggered automatically and generated report documents and structured data are forwarded to other connected systems.
 
 ## Tracking data processing
 
@@ -28,7 +32,7 @@ Used to debug processing steps, shows incoming data, error messages and processi
 
 ## System setup
 
-The Makefile automates procedures for setup and ensures system compliance. Instructions are provided on how to setup and check copmliance for DTS.
+The Makefile automates procedures for setup and ensures system compliance. Running 'make' instructions are provided on how to setup DTS.
 
 ```{bash}
 cd data-transfer-station

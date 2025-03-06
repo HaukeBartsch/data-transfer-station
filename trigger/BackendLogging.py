@@ -2,8 +2,8 @@ import sqlalchemy as sa
 from typing import List,Dict,Text,Any
 # import datetime
 
-class BackendLoggingSQL(host, port, dbname, driver):
-    def __init__(self):
+class BackendLoggingSQL():
+    def __init__(self, host, port, dbname, driver):
         self.servername = "%s:%d" % (host, port)
         self.dbname = dbname
         self.driver = driver

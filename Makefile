@@ -56,6 +56,7 @@ trigger-running: trigger/etc_systemd_system_trigger.service trigger/trigger.py t
 	cp trigger/etc_systemd_system_trigger.service /etc/systemd/system/trigger.service
 	test -d /data/code/trigger || mkdir -p /data/code/trigger
 	cp trigger/trigger.py /data/code/trigger/trigger.py
+	cp trigger/BackendLogging.py /data/code/trigger/BackendLogging.py
 	cp trigger/config.json /data/code/trigger/config.json
 	systemctl enable trigger.service
 	systemctl restart trigger.service

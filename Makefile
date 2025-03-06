@@ -11,7 +11,7 @@ all: run-as-root make-secure receiver-exists receiver-running trigger-running
 #
 # Check if we have all software isntalled
 #
-REQUIRED-SOFTWARE = podman md5sum apache2 storescu logrotate php
+REQUIRED-SOFTWARE = podman md5sum apache2 storescu logrotate php python3-pip python3-sqlalchemy
 
 K := $(foreach bin,$(REQUIRED-SOFTWARE),\
     $(if $(shell command -v $(bin) 2> /dev/null),$(info Found `$(bin)`),$(error Please install `$(bin)`)))

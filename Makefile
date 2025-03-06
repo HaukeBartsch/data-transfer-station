@@ -11,7 +11,7 @@ all: run-as-root make-secure receiver-exists receiver-running trigger-running
 #
 # Check if we have all software isntalled
 #
-REQUIRED-SOFTWARE = podman md5sum apache2 storescu logrotate php python3-pip python3-sqlalchemy
+REQUIRED-SOFTWARE = podman md5sum apache2 storescu logrotate php
 
 K := $(foreach bin,$(REQUIRED-SOFTWARE),\
     $(if $(shell command -v $(bin) 2> /dev/null),$(info Found `$(bin)`),$(error Please install `$(bin)`)))
@@ -57,6 +57,7 @@ trigger-running: trigger/etc_systemd_system_trigger.service trigger/trigger.py t
 	test -d /data/code/trigger || mkdir -p /data/code/trigger
 	cp trigger/trigger.py /data/code/trigger/trigger.py
 	cp trigger/BackendLogging.py /data/code/trigger/BackendLogging.py
+	apt update -yy && apt install -yy python3-sqlalchemy
 	cp trigger/config.json /data/code/trigger/config.json
 	systemctl enable trigger.service
 	systemctl restart trigger.service

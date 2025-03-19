@@ -60,8 +60,11 @@ trigger-running: trigger/etc_systemd_system_trigger.service trigger/trigger.py t
 	apt update -yy && apt install -yy python3-sqlalchemy
 	cp trigger/addJob.sh /data/code/trigger/addJob.sh && chmod +x /data/code/trigger/addJob.sh
 	cp trigger/runOneJob.sh /data/code/trigger/runOneJob.sh && chmod +x /data/code/trigger/runOneJob.sh
-	@if [ ! $(shell crontab -l | grep -v "runOneJob.sh") ] ;\
+	@if crontab -l | grep -q runOneJob.sh; \
 	then \
+	  echo "crontab entry for runOneJob.sh already exists"; \
+	else \
+	  echo "create crontab entry for runOneJob.sh"; \
 	  ( crontab -l; echo '*/1 * * * * /usr/bin/flock -n /data/logs/runOneJob.pid /data/code/trigger/runOneJob.sh >> /data/logs/runOneJob.log 2>&1' ) | crontab - ;\
 	fi
 	cp trigger/select.statements.json /data/code/trigger/select.statements.json

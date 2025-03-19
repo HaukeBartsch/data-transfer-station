@@ -20,6 +20,10 @@ if [[ "${me}" != "root" ]]; then
 fi
 
 input="/data/code/workflow_joblist.jobs"
+if [ ! -f "${input}" ]; then
+    echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] File \"${input}\" not found. Nothing to do."
+    exit
+fi
 echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] INFO `cat ${input} | wc -l` job(s) in workflow_joblist.jobs"
 
 storage="/export/Workflows"

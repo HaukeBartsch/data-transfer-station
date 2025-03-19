@@ -19,7 +19,7 @@ K := $(foreach bin,$(REQUIRED-SOFTWARE),\
 run-as-root :
 	@if [ $${EUID} -ne 0 ] ;\
 	then \
-	  echo "Error: You need to be root"; \
+	  echo -e "\033[0;31mError: You need to be root\033[0m"; \
 	  exit 1; \
 	fi
 	@echo "You are root, continue with checking...";
@@ -64,7 +64,7 @@ trigger-running: trigger/etc_systemd_system_trigger.service trigger/trigger.py t
 	then \
 	  echo "crontab entry for runOneJob.sh already exists"; \
 	else \
-	  echo "create crontab entry for runOneJob.sh"; \
+	  echo -e "\033[0;31mcreate crontab entry for runOneJob.sh\033[0m"; \
 	  ( crontab -l; echo '*/1 * * * * /usr/bin/flock -n /data/logs/runOneJob.pid /data/code/trigger/runOneJob.sh >> /data/logs/runOneJob.log 2>&1' ) | crontab - ;\
 	fi
 	cp trigger/select.statements.json /data/code/trigger/select.statements.json
@@ -82,12 +82,12 @@ ai-core001:
 	then \
 	  wget -qO- https://github.com/mmiv-center/Research-Information-System/raw/master/components/Workflow-Image-AI/build/linux-amd64/ror > /usr/local/bin/ror; \
 	  chmod +x /usr/local/bin/ror; \
-	  echo "download and setup for ror is done (`which ror`)"; \
+	  echo "download and setup ror now (`which ror`)"; \
 	else \
 	  echo "ror is already installed (`which ror`)"; \
 	fi
 	@if [ ! -e /data/ai-core001/select.statement ]; \
 	then \
-	  echo "Please create a select.statement file in /data/ai-core001"; \
+	  echo -e "\033[0;31mPlease create a select.statement file in /data/ai-core001\033[0m"; \
 	  exit 1; \
 	fi

@@ -68,9 +68,11 @@ log-rotate: trigger/logrotate_trigger.conf
 	systemctl restart logrotate
 
 ai-core001:
-	@if ! $(shell which ror); \
+	@if [ -z $(shell command -v ror 2> /dev/null) ] ;\
 	then \
-	  echo "Installing ror"; \
-	  wget -qO- https://github.com/mmiv-center/Research-Information-System/raw/master/components/Workflow-Image-AI/build/linux-amd64/ror > /usr/local/bin/ror \
-	  chmod +x /usr/local/bin/ror \
+	  wget -qO- https://github.com/mmiv-center/Research-Information-System/raw/master/components/Workflow-Image-AI/build/linux-amd64/ror > /usr/local/bin/ror; \
+	  chmod +x /usr/local/bin/ror; \
+	  echo "download and setup for ror is done (`which ror`)"; \
+	else \
+	  echo "ror is already installed (`which ror`)"; \
 	fi

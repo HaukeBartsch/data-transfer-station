@@ -59,7 +59,11 @@ trigger-running: trigger/etc_systemd_system_trigger.service trigger/trigger.py t
 	cp trigger/BackendLogging.py /data/code/trigger/BackendLogging.py
 	apt update -yy && apt install -yy python3-sqlalchemy
 	cp trigger/addJob.sh /data/code/trigger/addJob.sh && chmod +x /data/code/trigger/addJob.sh
-	cp trigger/select.statements /data/code/trigger/select.statements
+	cp trigger/runOneJob.sh /data/code/trigger/runOneJob.sh && chmod +x /data/code/trigger/runOneJob.sh
+	@if [ ! $(shell crontab -l | grep -v "runOneJob.sh") ]; then \
+	  { crontab -l; echo '*/1 * * * * /usr/bin/flock -n /data/logs/runOneJob.pid /data/code/trigger/runOneJob.sh >> /data/logs/runOneJob.log 2>&1' } | crontab - \
+	fi
+	cp trigger/select.statements.json /data/code/trigger/select.statements.json
 	cp trigger/config.json /data/code/trigger/config.json
 	systemctl enable trigger.service
 	systemctl restart trigger.service

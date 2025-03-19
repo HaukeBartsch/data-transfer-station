@@ -5,7 +5,7 @@ SHELL := /bin/bash
 
 
 .PHONY: all
-all: run-as-root make-secure receiver-exists receiver-running trigger-running
+all: run-as-root make-secure receiver-exists receiver-running trigger-running ai-core001
 
 
 #
@@ -66,3 +66,11 @@ trigger-running: trigger/etc_systemd_system_trigger.service trigger/trigger.py t
 log-rotate: trigger/logrotate_trigger.conf
 	cp trigger/logrotate_trigger.conf /var/logrotate.d/trigger.conf
 	systemctl restart logrotate
+
+ai-core001:
+	@if ! $(shell which ror); \
+	then \
+	  echo "Installing ror"; \
+	  wget -qO- https://github.com/mmiv-center/Research-Information-System/raw/master/components/Workflow-Image-AI/build/linux-amd64/ror > /usr/local/bin/ror \
+	  chmod +x /usr/local/bin/ror \
+	fi

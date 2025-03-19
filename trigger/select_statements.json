@@ -1,0 +1,7 @@
+{
+    "EndometrialCancer": {
+        "select": "/data/ai-core001/select.statement",
+        "ROR_CONT_OPTIONS": "{}",
+        "docker_image": "segm_ec_vibe:latest"
+    }
+}

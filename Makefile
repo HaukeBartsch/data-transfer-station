@@ -58,6 +58,8 @@ trigger-running: trigger/etc_systemd_system_trigger.service trigger/trigger.py t
 	cp trigger/trigger.py /data/code/trigger/trigger.py
 	cp trigger/BackendLogging.py /data/code/trigger/BackendLogging.py
 	apt update -yy && apt install -yy python3-sqlalchemy
+	cp trigger/addJob.sh /data/code/trigger/addJob.sh && chmod +x /data/code/trigger/addJob.sh
+	cp trigger/select.statements /data/code/trigger/select.statements
 	cp trigger/config.json /data/code/trigger/config.json
 	systemctl enable trigger.service
 	systemctl restart trigger.service
@@ -75,4 +77,9 @@ ai-core001:
 	  echo "download and setup for ror is done (`which ror`)"; \
 	else \
 	  echo "ror is already installed (`which ror`)"; \
+	fi
+	@if [ ! -e /data/ai-core001/select.statement ]; \
+	then \
+	  echo "Please create a select.statement file in /data/ai-core001"; \
+	  exit 1; \
 	fi

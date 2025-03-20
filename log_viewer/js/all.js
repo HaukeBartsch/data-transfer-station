@@ -1,5 +1,7 @@
 
 
+var myChart = undefined;
+
 jQuery(document).ready(function() {
 	//console.log("populate the settings interface");
 	jQuery('#waiting_wheel').show();
@@ -93,8 +95,13 @@ jQuery(document).ready(function() {
 
 				// fill in the myChart
 				const ctx = document.getElementById('myChart');
+				// destroy the previous chart if it exists
+				if (typeof myChart != 'undefined') {
+					myChart.destroy();
+				}
+
 				// eslint-disable-next-line no-unused-vars
-				const myChart = new Chart(ctx, {
+				myChart = new Chart(ctx, {
 				  type: 'bar',
 				  data: {
 					labels: labels,

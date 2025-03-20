@@ -37,8 +37,8 @@ jQuery(document).ready(function() {
 		for (var i = 0; i < data['Streams'].length; i++) {
 			txt += "<dt>" + data['Streams'][i].name + "</dt>";
 			txt += "<dd>" + data['Streams'][i].description + "<br>" +
-				"Triggered by: " + JSON.stringify(data['Streams'][i].trigger) + "<br>" +
-				"Destination:" + JSON.stringify(data['Streams'][i].destination) + "</dd>";
+				"Triggered by: <tt>" + JSON.stringify(data['Streams'][i].trigger) + "</tt><br>" +
+				"Destination: <tt>" + JSON.stringify(data['Streams'][i].destination) + "</tt></dd>";
 		}
 		txt += "</dl>";
 		jQuery("#stream-info").append(txt);

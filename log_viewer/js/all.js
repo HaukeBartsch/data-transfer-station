@@ -88,7 +88,7 @@ jQuery(document).ready(function() {
 					data.push( daysAgo[i] == undefined ? 0 : daysAgo[i].length );
 				}
 				// fill in the myChart
-				const ctx = document.getElementById('myChart')
+				const ctx = document.getElementById('myChart');
 				// eslint-disable-next-line no-unused-vars
 				const myChart = new Chart(ctx, {
 				  type: 'bar',

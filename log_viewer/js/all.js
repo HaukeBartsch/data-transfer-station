@@ -80,13 +80,17 @@ jQuery(document).ready(function() {
 					}
 					jQuery("#log_table").append("<tr><td>" + i + "</td><td>" + l[0] + " / " + l[1] + "</td><td>" + l[2] + "</td><td>" + txt + "</td></tr>");
 				}
-				var daysPrior = 7;
+				var daysPrior = 14;
 				var labels = [];
 				var data = [];
 				for (var i = 0; i < daysPrior; i++) {
 					labels.push( dayjs().subtract(i, 'day').format('ddd') );
 					data.push( daysAgo[i] == undefined ? 0 : daysAgo[i].length );
 				}
+				// today should be last entry
+				labels = labels.reverse();
+				data = data.reverse();
+
 				// fill in the myChart
 				const ctx = document.getElementById('myChart');
 				// eslint-disable-next-line no-unused-vars

@@ -54,6 +54,7 @@ jQuery(document).ready(function() {
 			}
 			if (typeof data["trigger_study"] != "undefined") {
 				jQuery("#log_table").children().remove();
+				var daysAgo = {};  // based on today we need an array of names and numbers				 
 				for (var i = 0; i < data["trigger_study"].length; i++) {
 					var l = data["trigger_study"][i].split(" ");
 					var rest = l.slice(3).join(' ');
@@ -69,8 +70,17 @@ jQuery(document).ready(function() {
 						console.log("could not parse as json: " + rest);
 						txt = rest;
 					}
+					var dat = dayjs(l[0],"YYYY-MM-DD");
+					var today = dayjs();
+					var diff = today.diff(dat, 'days');
+					if (daysAgo[diff] == undefined) {
+						daysAgo[diff] = [];
+					} else {
+						daysAgo[diff].push({ "date": l[0], "day": today.day(), "time": l[1] });
+					}
 					jQuery("#log_table").append("<tr><td>" + i + "</td><td>" + l[0] + " / " + l[1] + "</td><td>" + l[2] + "</td><td>" + txt + "</td></tr>");
 				}
+
 			}
 		});
 	}, 10000);

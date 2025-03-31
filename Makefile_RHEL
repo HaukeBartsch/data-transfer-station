@@ -1,5 +1,5 @@
 #
-# Setup and check the configuration of DTS
+# Setup and check the configuration of DTS - version for RHEL
 #
 SHELL := /bin/bash
 
@@ -10,7 +10,7 @@ all: run-as-root  data-folders compose trigger-running log-rotate ai-core001
 #
 # Check if we have all software isntalled
 #
-REQUIRED-SOFTWARE = podman md5sum storescu logrotate  #  php httpd 
+REQUIRED-SOFTWARE = docker docker-compose md5sum storescu logrotate which  #  php httpd 
 
 K := $(foreach bin,$(REQUIRED-SOFTWARE),\
     $(if $(shell command -v $(bin) 2> /dev/null),$(info Found `$(bin)`),$(error Please install `$(bin)`)))
@@ -33,7 +33,7 @@ data-folders:
 
 compose:
 	docker compose rm
-	docker compose -f compose.yml  up -d 
+	docker compose -f docker-compose.yml  up -d 
 
 
 trigger-running: trigger/etc_systemd_system_trigger.service trigger/trigger.py custom_configs/config.json
@@ -74,6 +74,3 @@ ai-core001:
 	  echo -e "\033[0;31mPlease create a select.statement file in /data/ai-core001\033[0m"; \
 	  exit 1; \
 	fi
-
-
-

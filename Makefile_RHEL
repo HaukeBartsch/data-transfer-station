@@ -1,0 +1,79 @@
+#
+# Setup and check the configuration of DTS
+#
+SHELL := /bin/bash
+
+
+.PHONY: all
+all: run-as-root  data-folders compose trigger-running log-rotate ai-core001
+
+#
+# Check if we have all software isntalled
+#
+REQUIRED-SOFTWARE = podman md5sum storescu logrotate  #  php httpd 
+
+K := $(foreach bin,$(REQUIRED-SOFTWARE),\
+    $(if $(shell command -v $(bin) 2> /dev/null),$(info Found `$(bin)`),$(error Please install `$(bin)`)))
+
+run-as-root :
+	@if [ $${EUID} -ne 0 ] ;\
+	then \
+	  echo "Error: You need to be root"; \
+	  exit 1; \
+	fi
+	@echo "You are root, continue with checking...";
+
+data-folders:
+	@test -d /data/site/archive || mkdir -p /data/site/archive
+	@test -d /data/site/raw || mkdir -p /data/site/raw
+	@test -d /data/site/.arrived || mkdir -p /data/site/.arrived
+	@test -d /data/logs || mkdir -p /data/logs
+	@test -d /data/ai-core001 || mkdir -p /data/ai-core001
+	@echo "check /data/site folders done"
+
+compose:
+	docker compose rm
+	docker compose -f compose.yml  up -d 
+
+
+trigger-running: trigger/etc_systemd_system_trigger.service trigger/trigger.py custom_configs/config.json
+	cp trigger/etc_systemd_system_trigger.service /etc/systemd/system/trigger.service
+	test -d /data/code/trigger || mkdir -p /data/code/trigger
+	cp trigger/trigger.py /data/code/trigger/trigger.py
+	cp trigger/BackendLogging.py /data/code/trigger/BackendLogging.py
+	cp custom_configs/config.json /data/code/trigger/config.json
+	cp trigger/addJob.sh /data/code/trigger/addJob.sh && chmod +x /data/code/trigger/addJob.sh
+	cp trigger/runOneJob.sh /data/code/trigger/runOneJob.sh && chmod +x /data/code/trigger/runOneJob.sh
+	@if crontab -l | grep -q runOneJob.sh; \
+	then \
+	  echo "crontab entry for runOneJob.sh already exists"; \
+	else \
+	  echo -e "\033[0;31mcreate crontab entry for runOneJob.sh\033[0m"; \
+	  ( crontab -l; echo '*/1 * * * * /usr/bin/flock -n /data/logs/runOneJob.pid /data/code/trigger/runOneJob.sh >> /data/logs/runOneJob.log 2>&1' ) | crontab - ;\
+	fi
+	cp trigger/select.statements.json /data/code/trigger/select.statements.json
+	systemctl enable trigger.service
+	systemctl restart trigger.service
+	systemctl status trigger.service
+
+log-rotate: trigger/logrotate_trigger.conf
+	cp trigger/logrotate_trigger.conf /var/logrotate.d/trigger.conf
+	systemctl restart logrotate
+
+ai-core001:
+	@if [ -z $(shell command -v ror 2> /dev/null) ] ;\
+	then \
+	  wget -qO- https://github.com/mmiv-center/Research-Information-System/raw/master/components/Workflow-Image-AI/build/linux-amd64/ror > /usr/sbin/ror; \
+	  chmod +x /usr/sbin/ror; \
+	  echo "download and setup ror now (`which ror`)"; \
+	else \
+	  echo "ror is already installed (`which ror`)"; \
+	fi
+	@if [ ! -e /data/ai-core001/select.statement ]; \
+	then \
+	  echo -e "\033[0;31mPlease create a select.statement file in /data/ai-core001\033[0m"; \
+	  exit 1; \
+	fi
+
+
+

@@ -2,18 +2,32 @@ services:
   receiver:
     container_name: receiver
     image: receiver
+    build: ./receiver
     restart: unless-stopped
     ports:
       - 11112:11112
     volumes:
-      - /tmp/site/archive:/data/site/archive 
-      - /tmp/site/raw:/data/site/raw 
-      - /tmp/site/.arrived:/data/site/.arrived 
-      - /tmp:/root/logs 
+      - /tmp/site/archive:/data/site/archive
+      - /tmp/site/raw:/data/site/raw
+      - /tmp/site/.arrived:/data/site/.arrived
+      - /tmp:/root/logs
   
+  trigger:
+    container_name: trigger
+    image: trigger
+    build: ./trigger
+    restart: unless-stopped
+    depends_on:
+      - receiver
+    volumes:
+      - /tmp/site/archive:/data/site/archive
+      - /tmp/site/raw:/data/site/raw
+      - /tmp/site/.arrived:/data/site/.arrived
+      - /tmp:/root/logs
+      - /tmp/site/code:/data/code/workflow_joblist.jobs
+
   fail2ban:
     container_name: fail2ban
     image: linuxserver/fail2ban:latest
     volumes:
       - /opt/fail2ban/config:/config
-     

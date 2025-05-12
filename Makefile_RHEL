@@ -10,7 +10,7 @@ all: run-as-root  data-folders compose trigger-running log-rotate ai-core001
 #
 # Check if we have all software isntalled
 #
-REQUIRED-SOFTWARE = docker docker-compose md5sum storescu logrotate which  #  php httpd 
+REQUIRED-SOFTWARE = docker docker-compose md5sum storescu logrotate which flock  #  php httpd 
 
 K := $(foreach bin,$(REQUIRED-SOFTWARE),\
     $(if $(shell command -v $(bin) 2> /dev/null),$(info Found `$(bin)`),$(error Please install `$(bin)`)))
@@ -28,6 +28,7 @@ data-folders:
 	@test -d /data/site/raw || mkdir -p /data/site/raw
 	@test -d /data/site/.arrived || mkdir -p /data/site/.arrived
 	@test -d /data/logs || mkdir -p /data/logs
+	@test -d /data/runner || mkdir -p /data/runner
 	@test -d /data/ai-core001 || mkdir -p /data/ai-core001
 	@echo "check /data/site folders done"
 
@@ -36,25 +37,26 @@ compose:
 	docker compose -f docker-compose.yml  up -d 
 
 
-trigger-running: trigger/etc_systemd_system_trigger.service trigger/trigger.py custom_configs/config.json
-	cp trigger/etc_systemd_system_trigger.service /etc/systemd/system/trigger.service
-	test -d /data/code/trigger || mkdir -p /data/code/trigger
-	cp trigger/trigger.py /data/code/trigger/trigger.py
-	cp trigger/BackendLogging.py /data/code/trigger/BackendLogging.py
-	cp custom_configs/config.json /data/code/trigger/config.json
-	cp trigger/addJob.sh /data/code/trigger/addJob.sh && chmod +x /data/code/trigger/addJob.sh
-	cp trigger/runOneJob.sh /data/code/trigger/runOneJob.sh && chmod +x /data/code/trigger/runOneJob.sh
-	@if crontab -l | grep -q runOneJob.sh; \
-	then \
-	  echo "crontab entry for runOneJob.sh already exists"; \
-	else \
-	  echo -e "\033[0;31mcreate crontab entry for runOneJob.sh\033[0m"; \
-	  ( crontab -l; echo '*/1 * * * * /usr/bin/flock -n /data/logs/runOneJob.pid /data/code/trigger/runOneJob.sh >> /data/logs/runOneJob.log 2>&1' ) | crontab - ;\
-	fi
-	cp trigger/select.statements.json /data/code/trigger/select.statements.json
-	systemctl enable trigger.service
-	systemctl restart trigger.service
-	systemctl status trigger.service
+# Trigger is now another docker container (see docker-compose.yml)
+#trigger-running: trigger/etc_systemd_system_trigger.service trigger/trigger.py custom_configs/config.json
+#	cp trigger/etc_systemd_system_trigger.service /etc/systemd/system/trigger.service
+#	test -d /data/code/trigger || mkdir -p /data/code/trigger
+#	cp trigger/trigger.py /data/code/trigger/trigger.py
+#	cp trigger/BackendLogging.py /data/code/trigger/BackendLogging.py
+#	cp custom_configs/config.json /data/code/trigger/config.json
+#	cp trigger/addJob.sh /data/code/trigger/addJob.sh && chmod +x /data/code/trigger/addJob.sh
+#	cp runner/runOneJob.sh /data/code/runner/runOneJob.sh && chmod +x /data/code/runner/runOneJob.sh
+#	@if crontab -l | grep -q runOneJob.sh; \
+#	then \
+#	  echo "crontab entry for runOneJob.sh already exists"; \
+#	else \
+#	  echo -e "\033[0;31mcreate crontab entry for runOneJob.sh\033[0m"; \
+#	  ( crontab -l; echo '*/1 * * * * /usr/bin/flock -n /data/logs/runOneJob.pid /data/code/runner/runOneJob.sh >> /data/logs/runOneJob.log 2>&1' ) | crontab - ;\
+#	fi
+#	cp trigger/select.statements.json /data/code/trigger/select.statements.json
+#	systemctl enable trigger.service
+#	systemctl restart trigger.service
+#	systemctl status trigger.service
 
 log-rotate: trigger/logrotate_trigger.conf
 	cp trigger/logrotate_trigger.conf /var/logrotate.d/trigger.conf

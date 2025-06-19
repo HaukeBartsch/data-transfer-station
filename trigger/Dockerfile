@@ -15,6 +15,7 @@ RUN apt update && apt install -yq procps net-tools jq dcmtk cron wget cmake gcc 
 
 COPY trigger.py /trigger.py
 COPY config.json /config.json
+COPY BackendLogging.py /BackendLogging.py
 #COPY --chown=www-data log_viewer/ /var/www/html/
 
 RUN mkdir -p /data/logs/ && touch /data/logs/trigger.log \

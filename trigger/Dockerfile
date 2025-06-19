@@ -11,14 +11,14 @@ FROM debian:bookworm-slim
 
 # As an output this container will write into the joblist file "/data/code/workflow_joblist.jobs" (for runner).
 
-RUN apt update && apt install -y procps net-tools jq dcmtk cron wget cmake gcc g++ python3 python3-pip systemd apache2
+RUN apt update && apt install -yq procps net-tools jq dcmtk cron wget cmake gcc g++ python3 python3-pip systemd apache2
 
 COPY trigger.py /trigger.py
 COPY config.json /config.json
-COPY --chown=www-data log_viewer/ /var/www/html/
+#COPY --chown=www-data log_viewer/ /var/www/html/
 
 RUN mkdir -p /data/logs/ && touch /data/logs/trigger.log \
-    && wget -qO- https://github.com/mmiv-center/Research-Information-System/raw/master/components/Workflow-Image-AI/build/linux-amd64/ror > /usr/sbin/ror; \
+    && wget -qO- https://github.com/mmiv-center/Research-Information-System/raw/master/components/Workflow-Image-AI/build/linux-amd64/ror > /usr/sbin/ror \
     && chmod +x /usr/sbin/ror;
 
 

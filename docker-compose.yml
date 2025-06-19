@@ -26,8 +26,8 @@ services:
       - /tmp:/root/logs
       - /tmp/site/code:/data/code/workflow_joblist.jobs
 
-  fail2ban:
-    container_name: fail2ban
-    image: linuxserver/fail2ban:latest
-    volumes:
-      - /opt/fail2ban/config:/config
+  #fail2ban:
+  #  container_name: fail2ban
+  #  image: linuxserver/fail2ban:latest
+  #  volumes:
+  #    - /opt/fail2ban/config:/config

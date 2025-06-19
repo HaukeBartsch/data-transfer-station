@@ -20,6 +20,12 @@ Features:
 
 ## Setup
 
+Checkout this repository. You will also need the A.I. service as a separate tar file (see below).
+
+```{bash}
+git clone https://github.com/HaukeBartsch/data-transfer-station.git
+```
+
 Use docker-compose to setup receiver and trigger services.
 
 ```{bash}

@@ -18,6 +18,26 @@ Features:
 - DICOM receive using storescp
 - Auto-forwarding based on DICOM tags
 
+## Setup
+
+Use docker-compose to setup receiver and trigger services.
+
+```{bash}
+docker compose up
+```
+
+Add the A.I. container to the system.
+
+```{bash}
+docker load < AI.tar
+```
+
+Setup the runner as a cron-job. It will check the output of the trigger service and run the A.I. container if needed.
+
+```{bash}
+( crontab -l; echo '*/1 * * * * /usr/bin/flock -n /data/logs/runOneJob.pid /data/code/trigger/runOneJob.sh >> /data/logs/runOneJob.log 2>&1' ) | crontab - ;
+```
+
 ## Data receiver
 
 Interfaces with the Picture Archive and Communication System (PACS). Listens for DICOM requests on a port and stores the images temporarily. This component is run using a docker container.

@@ -46,8 +46,11 @@ Setup the runner as a cron-job. It will check the output of the trigger service 
 mkdir -p /data/logs /data/code/trigger;
 cp runner/runOneJob.sh /data/code/trigger;
 ( crontab -l; echo '*/1 * * * * /usr/bin/flock -n /data/logs/runOneJob.pid /data/code/trigger/runOneJob.sh >> /data/logs/runOneJob.log 2>&1' ) | crontab - ;
-```
 
+# get a copy of ror, check your platform code
+wget -qO- https://github.com/mmiv-center/Research-Information-System/raw/master/components/Workflow-Image-AI/build/linux-amd64/ror > /data/code/trigger/ror;
+chmod +x /data/code/trigger/ror;
+```
 
 ### Test the receiver
 

@@ -27,7 +27,7 @@ fi
 echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] INFO `cat ${input} | wc -l` job(s) in workflow_joblist.jobs"
 
 storage="/export/Workflows"
-ror="/usr/local/bin/ror"
+ror="/data/code/trigger/ror"
 declare -a jobsToDelete
 jobsCounter=0
 # for each job

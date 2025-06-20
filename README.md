@@ -24,6 +24,8 @@ Checkout this repository. You will also need the A.I. service as a separate tar 
 
 ```{bash}
 git clone https://github.com/HaukeBartsch/data-transfer-station.git
+# move template configuration to /data/configuration
+mkdir -p /data && cp -R configuration /data/configuration
 ```
 
 Use docker-compose to setup receiver and trigger services.
@@ -38,11 +40,14 @@ Add the A.I. container to the system.
 docker load < AI.tar
 ```
 
-Setup the runner as a cron-job. It will check the output of the trigger service and run the A.I. container if needed.
+Setup the runner as a cron-job. It will check the output of the trigger service and run the A.I. container if needed. You need permissions to create a /data directory.
 
 ```{bash}
+mkdir -p /data/logs /data/code/trigger;
+cp runner/runOneJob.sh /data/code/trigger;
 ( crontab -l; echo '*/1 * * * * /usr/bin/flock -n /data/logs/runOneJob.pid /data/code/trigger/runOneJob.sh >> /data/logs/runOneJob.log 2>&1' ) | crontab - ;
 ```
+
 
 ### Test the receiver
 
@@ -52,6 +57,9 @@ If the setup worked the receiver should be accessible on port 11112 (DICOM). You
 # apt install dcmtk
 storescu -aet me -aec me -nh +sd +r localhost 11112 <data-folder>
 ```
+
+If the above was successful you should see the data appearing in the archive and raw folders.
+
 
 ## Data receiver
 

@@ -23,8 +23,10 @@ services:
       - /tmp/site/archive:/data/site/archive
       - /tmp/site/raw:/data/site/raw
       - /tmp/site/.arrived:/data/site/.arrived
-      - /tmp:/root/logs
-      - /tmp/site/code:/data/code/workflow_joblist.jobs
+      - /data/logs:/root/logs
+      - /data/code/trigger:/data/code/workflow_joblist.jobs
+      - /data/configuration/config.json:/config.json
+      - /data/configuration/select.statements.json:/select.statements.json
 
   #fail2ban:
   #  container_name: fail2ban

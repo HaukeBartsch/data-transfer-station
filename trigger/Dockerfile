@@ -14,8 +14,9 @@ FROM debian:bookworm-slim
 RUN apt update && apt install -yq procps net-tools jq dcmtk cron wget cmake gcc g++ python3 python3-pip systemd apache2 && apt install -yq python3-sqlalchemy
 
 COPY trigger.py /trigger.py
-COPY config.json /config.json
+#COPY config.json /config.json
 COPY BackendLogging.py /BackendLogging.py
+# Do not use the log-viewer for now
 #COPY --chown=www-data log_viewer/ /var/www/html/
 
 RUN mkdir -p /data/logs/ && touch /data/logs/trigger.log \

@@ -8,6 +8,7 @@ if [ "$#" -lt 4 ]; then
     echo "Usage: <folder to /tmp/site/archive/scp_...> <ror folder> <destination as json> <stream name>"
     exit -1
 fi
+
 input="$1"
 ror_folder="$2"
 destination="$3"
@@ -32,8 +33,8 @@ fi
 #fi
 InstitutionName="${stream_name}"
  
-ImageName=$(jq -r ".\"${stream_name}\".docker_image" /configuration/select.statements.json)
-ROR_CONT_OPTIONS=$(jq -r ".\"${stream_name}\".ROR_CONT_OPTIONS" /configuration/select.statements.json)
+ImageName=$(jq -r ".\"${stream_name}\".docker_image" /configuration/select_statements.json)
+ROR_CONT_OPTIONS=$(jq -r ".\"${stream_name}\".ROR_CONT_OPTIONS" /configuration/select_statements.json)
 # check if value is error message and set to empty string instead {}
 if [ ! -z "$ROR_CONT_OPTIONS" ]; then
     ROR_CONT_OPTIONS=$(echo $ROR_CONT_OPTIONS | sed -e 's/"/\\"/g')

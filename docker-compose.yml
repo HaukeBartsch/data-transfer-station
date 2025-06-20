@@ -23,7 +23,7 @@ services:
       - /tmp/site/archive:/data/site/archive
       - /tmp/site/raw:/data/site/raw
       - /tmp/site/.arrived:/data/site/.arrived
-      - /data/logs:/root/logs
+      - /data/logs:/data/logs
       - /data/code:/data/code
       - ./configuration:/configuration
 

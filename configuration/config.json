@@ -26,18 +26,38 @@
                     ]
                 }
             ],
+
             "trigger-study": [
                 {
-                    "type": "send",
-                    "send": "http",
-                    "destination": "http://localhost:11120"
+                    "type": "exec",
+                    "cmd": [ "echo", "triggered this service", "@StudyInstanceUID@", "@SeriesInstanceUID@", "@PATH@", "@DESCRIPTION@" ]
                 },
                 {
                     "type": "exec",
-                    "cmd": [ "echo", "triggered this service", "@StudyInstanceUID@", "@PATH@", "@DESCRIPTION@" ]
+                    "cmd": [ "mkdir", "-p", "/tmp/site/proc/@StudyInstanceUID@" ]
+                },
+                {
+                    "type": "exec",
+                    "cmd": [ "/usr/sbin/ror", "init", "-type", "python", "/tmp/site/proc/@StudyInstanceUID@" ]
+                },
+                {
+                    "type": "exec",
+                    "cmd": [ "/usr/sbin/ror", "config", "--working_directory", "/tmp/site/proc/@StudyInstanceUID@", "--temp_directory", "/tmp/site/proc/@StudyInstanceUID@", "--data", "/tmp/site/archive/@StudyInstanceUID@" ]
+                },
+                {
+                    "type": "exec",
+                    "cmd": [ "/pullSelect.sh", "/tmp/site/archive/@StudyInstanceUID@", "/tmp/site/proc/@StudyInstanceUID@/select.statement" ]
+                },
+                {
+                    "type": "exec",
+                    "cmd": [ "/usr/sbin/ror", "config", "--working_directory", "/tmp/site/proc/@StudyInstanceUID@", "--call", "python /app/segm.py /data", "-select", "/tmp/site/proc/@StudyInstanceUID@/select.statement" ]
+                },
+                {
+                    "type": "exec",
+                    "cmd": [ "/addJob.sh", "/tmp/site/archive/@StudyInstanceUID@", "/tmp/site/proc/@StudyInstanceUID@", "@destination@" ]
                 }
             ],
-            "trigger-series": []        
+            "trigger-series": []
         }
     ]
 }

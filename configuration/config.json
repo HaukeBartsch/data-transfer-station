@@ -30,7 +30,7 @@
             "trigger-study": [
                 {
                     "type": "exec",
-                    "cmd": [ "echo", "triggered this service", "@StudyInstanceUID@", "@SeriesInstanceUID@", "@PATH@", "@DESCRIPTION@" ]
+                    "cmd": [ "echo", "triggered this service", "@StudyInstanceUID@", "@SeriesInstanceUID@", "@PATH@", "@DESCRIPTION@", "@StreamName@" ]
                 },
                 {
                     "type": "exec",
@@ -46,7 +46,7 @@
                 },
                 {
                     "type": "exec",
-                    "cmd": [ "/pullSelect.sh", "/tmp/site/archive/@StudyInstanceUID@", "/tmp/site/proc/@StudyInstanceUID@/select.statement" ]
+                    "cmd": [ "/pullSelect.sh", "/tmp/site/archive/@StudyInstanceUID@", "/tmp/site/proc/@StudyInstanceUID@/select.statement", "@StreamName@" ]
                 },
                 {
                     "type": "exec",
@@ -54,7 +54,7 @@
                 },
                 {
                     "type": "exec",
-                    "cmd": [ "/addJob.sh", "/tmp/site/archive/@StudyInstanceUID@", "/tmp/site/proc/@StudyInstanceUID@", "@destination@" ]
+                    "cmd": [ "/addJob.sh", "/tmp/site/archive/@StudyInstanceUID@", "/tmp/site/proc/@StudyInstanceUID@", "@destination@", "@StreamName@" ]
                 }
             ],
             "trigger-series": []

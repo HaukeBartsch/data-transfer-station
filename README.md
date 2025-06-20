@@ -25,7 +25,7 @@ Checkout this repository. You will also need the A.I. service as a separate tar 
 ```{bash}
 git clone https://github.com/HaukeBartsch/data-transfer-station.git
 # move template configuration to /data/configuration, requires root permissions
-sudo mkdir -p /data && cp -R configuration /data/configuration
+sudo mkdir -p /data && sudo cp -R configuration /data/configuration
 ```
 
 Use docker-compose to setup receiver and trigger services.

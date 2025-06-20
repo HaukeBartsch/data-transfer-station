@@ -11,7 +11,7 @@ FROM debian:bookworm-slim
 
 # As an output this container will write into the joblist file "/data/code/workflow_joblist.jobs" (for runner).
 
-RUN apt update && apt install -yq procps net-tools jq dcmtk cron wget cmake gcc g++ python3 python3-pip systemd apache2 && apt install -yq python3-sqlalchemy
+RUN apt update && apt install -yq procps net-tools jq dcmtk cron wget cmake gcc g++ python3 python3-pip systemd apache2 python3-sqlalchemy
 
 COPY trigger.py /trigger.py
 #COPY config.json /config.json

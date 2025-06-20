@@ -7,10 +7,10 @@ services:
     ports:
       - 11112:11112
     volumes:
-      - /tmp/site/archive:/data/site/archive
-      - /tmp/site/raw:/data/site/raw
-      - /tmp/site/.arrived:/data/site/.arrived
-      - /tmp:/root/logs
+      - /data/site/archive:/data/site/archive
+      - /data/site/raw:/data/site/raw
+      - /data/site/.arrived:/data/site/.arrived
+      - /data/logs:/root/logs
   
   trigger:
     container_name: trigger
@@ -20,9 +20,9 @@ services:
     depends_on:
       - receiver
     volumes:
-      - /tmp/site/archive:/data/site/archive
-      - /tmp/site/raw:/data/site/raw
-      - /tmp/site/.arrived:/data/site/.arrived
+      - /data/site/archive:/data/site/archive
+      - /data/site/raw:/data/site/raw
+      - /data/site/.arrived:/data/site/.arrived
       - /data/logs:/data/logs
       - /data/code:/data/code
       - ./configuration:/configuration

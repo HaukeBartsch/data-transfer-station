@@ -34,10 +34,10 @@ RUN chmod 0744 /root/heartbeat.sh
 
 # Lets use a default project name "PROJ". We need a corresponding entry in /data/config/config.json.
 RUN crontab -l | { cat; echo "*/10 * * * * /root/storectl.sh start PROJ"; } | crontab -
-RUN crontab -l | { cat; echo "@reboot /root/storectl.sh start PROJ"; } | crontab -
 RUN crontab -l | { cat; echo "*/10 * * * * python3 /root/processSingleFile3.py start PROJ"; } | crontab -
-RUN crontab -l | { cat; echo "@reboot python3 /root/processSingleFile3.py start PROJ"; } | crontab -
 RUN crontab -l | { cat; echo "* * * * * /root/heartbeat.sh PROJ"; } | crontab -
+RUN crontab -l | { cat; echo "@reboot /root/storectl.sh start PROJ"; } | crontab -
+RUN crontab -l | { cat; echo "@reboot python3 /root/processSingleFile3.py start PROJ"; } | crontab -
 
 # create the propper storescp (depends on 3.6.7)
 RUN cd /opt && wget https://dicom.offis.de/download/dcmtk/dcmtk367/dcmtk-3.6.7.tar.gz \

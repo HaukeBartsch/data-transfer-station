@@ -44,6 +44,15 @@ Setup the runner as a cron-job. It will check the output of the trigger service 
 ( crontab -l; echo '*/1 * * * * /usr/bin/flock -n /data/logs/runOneJob.pid /data/code/trigger/runOneJob.sh >> /data/logs/runOneJob.log 2>&1' ) | crontab - ;
 ```
 
+### Test the receiver
+
+If the setup worked the receiver should be accessible on port 11112 (DICOM). You can send a test dataset to this port to check for success
+
+```{bash}
+# apt install dcmtk
+storescu -aet me -aec me -nh +sd +r localhost 11112 <data-folder>
+```
+
 ## Data receiver
 
 Interfaces with the Picture Archive and Communication System (PACS). Listens for DICOM requests on a port and stores the images temporarily. This component is run using a docker container.

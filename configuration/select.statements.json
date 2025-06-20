@@ -1,5 +1,5 @@
 {
-    "EndometrialCancer": {
+    "AIcore": {
         "select": "SELECT series FROM study WHERE series named \"VIBEDIXON_OLD\" has ProtocolName regexp \"fl3d_vibe_tra_ 2mm_2min\" and (\"0x0018\",\"0x0010\") regexp \".*Dotarem.*\" ALSO where series named \"VIBEDIXON_NEW\" has ProtocolName regexp \"t1_vibe_dixon_tra_p2 FOV 250 _2min\" and (\"0x0018\",\"0x0010\") regexp \".*Dotarem.*\"",
         "ROR_CONT_OPTIONS": "{\"--z-score-mean\":20,\"--z-score-std\":55,\"-b\":0.95}",
         "docker_image": "segm_ec_vibe:latest"

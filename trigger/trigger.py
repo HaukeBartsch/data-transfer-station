@@ -56,7 +56,7 @@ config = {
     ]
 }
 
-script_directory = os.path.dirname(os.path.abspath(sys.argv[0]))
+script_directory = os.path.dirname(os.path.abspath(sys.argv[1]))
 with open(os.path.join(script_directory,"config.json"), "r") as f:
     config = json.load(f)
     f.close()

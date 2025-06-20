@@ -23,9 +23,9 @@ fi
 
 if [ ! -z "$Stream" ]; then
     # use the stream name instead of extracting the statement from the project name
-    statement=$(jq -r ".\"${Stream}\".select" /var/www/html/applications/Workflows/php/select_statements.json)
+    statement=$(jq -r ".\"${Stream}\".select" /configuration/select_statements.json)
     if [ "${statement}" == "null" ] || [ "${statement}" == "" ]; then
-	echo "Error: no select statement found for stream \"$Stream\" in /var/www/html/applications/Workflows/php/select_statements.json"
+	echo "Error: no select statement found for stream \"$Stream\" in /configuration/select_statements.json"
 	exit -1
     fi
     
@@ -44,9 +44,9 @@ onefile=$(ls "${input}"/* | head -1)
 InstitutionName=$(dcmdump +P InstitutionName "${onefile}" | head -1 | cut -d'[' -f2 | cut -d']' -f1)
 echo "Project: $InstitutionName"
 
-statement=$(jq -r ".\"${InstitutionName}\".select" /var/www/html/applications/Workflows/php/select_statements.json)
+statement=$(jq -r ".\"${InstitutionName}\".select" /configuration/select_statements.json)
 if [ "${statement}" == "null" ] || [ "${statement}" == "" ]; then
-    echo "Error: no select statement found for project \"$InstitutionName\" in /var/www/html/applications/Workflows/php/select_statements.json"
+    echo "Error: no select statement found for project \"$InstitutionName\" in /configuration/select_statements.json"
     exit -1
 fi
 

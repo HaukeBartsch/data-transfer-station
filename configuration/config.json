@@ -34,7 +34,7 @@
                 },
                 {
                     "type": "exec",
-                    "cmd": [ "mkdir", "-p", "/tmp/site/proc/@StudyInstanceUID@" ]
+                    "cmd": [ "mkdir", "-p", "/data/proc/@StudyInstanceUID@" ]
                 },
                 {
                     "type": "exec",

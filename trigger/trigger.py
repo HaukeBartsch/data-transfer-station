@@ -139,6 +139,7 @@ while True:
             now = datetime.now()
             delta = now - t
             if delta.total_seconds() > config["timeout"]:
+                last_matching_stream = None
                 for stream in config["Streams"]:
                     target = stream["trigger"]
                     # is the current stream addressed?
@@ -172,7 +173,7 @@ while True:
                         destination = destination.replace('"', '\\"')
                     # get a new logger
                     logging.info("Matching stream %s for %s" % (stream["name"], json.dumps(target)))
-                                            
+                    last_matching_stream = stream["name"]                            
                     if type == "study":
                         if len(trigger_study) > 0:
                             logging.info("trigger study level (stream %s)" % (stream["name"]))
@@ -191,6 +192,9 @@ while True:
                                     RunExec(action["cmd"], destination, StudyInstanceUID, SeriesInstanceUID, stream["name"])
                                 else:
                                     logging.warning("%s: action not implemented, skip" % (stream["name"]))
+                if last_matching_stream is None:
+                    logging.info("No matching stream found for AETitleCaller: %s, AETitleCalled: %s" % (aet, aec))
+
                 try:
                     os.remove(file)
                 except OSError:

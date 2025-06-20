@@ -17,6 +17,7 @@ COPY trigger.py /trigger.py
 COPY BackendLogging.py /BackendLogging.py
 COPY addJob.sh /addJob.sh
 COPY pullSelect.sh /pullSelect.sh
+RUN chmod +x /trigger.py /addJob.sh /pullSelect.sh
 # Do not use the log-viewer for now
 #COPY --chown=www-data log_viewer/ /var/www/html/
 

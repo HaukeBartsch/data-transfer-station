@@ -31,7 +31,7 @@ sudo mkdir -p /data && cp -R configuration /data/configuration
 Use docker-compose to setup receiver and trigger services.
 
 ```{bash}
-docker compose up
+docker compose build --no-cache && docker compose up
 ```
 
 Add the A.I. container to the system.

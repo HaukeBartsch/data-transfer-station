@@ -24,9 +24,8 @@ services:
       - /tmp/site/raw:/data/site/raw
       - /tmp/site/.arrived:/data/site/.arrived
       - /data/logs:/root/logs
-      - /data/code/trigger:/data/code/workflow_joblist.jobs
-      - /data/configuration/config.json:/config.json
-      - /data/configuration/select.statements.json:/select.statements.json
+      - /data/code:/data/code
+      - /data/configuration:/configuration
 
   #fail2ban:
   #  container_name: fail2ban

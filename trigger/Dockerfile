@@ -24,4 +24,4 @@ RUN mkdir -p /data/logs/ && touch /data/logs/trigger.log \
     && chmod +x /usr/sbin/ror;
 
 
-CMD [ "/trigger.py", "config.json" ]
+CMD [ "/trigger.py", "/configuration/config.json" ]

@@ -47,7 +47,7 @@ date="$(date)"
 # TODO: need to make this work with spaces in the project name
 OIFS="$IFS"
 IFS=$'\n'
-for u in $(/usr/local/bin/ror status --working_directory "${ror_folder}" --jobs | jq -r ".[][].JobID"); do
+for u in $(/usr/sbin/ror status --working_directory "${ror_folder}" --jobs | jq -r ".[][].JobID"); do
   # append to the jobs file (with a newline at the end)
   echo "{\"type\":\"ror\",\"project\":\"${InstitutionName}\",\"stream\":\"${stream_name}\",\"image\":\"${ImageName}\",\"user\":\"processing\",\"date\":\"${date}\",\"job_number\":\"$u\",\"ror_folder\":\"${ror_folder}\",\"destination\":\"$destination\",\"ROR_CONT_OPTIONS\":\"$ROR_CONT_OPTIONS\"}" >> /data/code/workflow_joblist.jobs
  

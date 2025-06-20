@@ -25,7 +25,7 @@ services:
       - /tmp/site/.arrived:/data/site/.arrived
       - /data/logs:/root/logs
       - /data/code:/data/code
-      - /data/configuration:/configuration
+      - ./configuration:/configuration
 
   #fail2ban:
   #  container_name: fail2ban

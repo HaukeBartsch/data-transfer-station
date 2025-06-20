@@ -24,23 +24,23 @@ Checkout this repository. You will also need the A.I. service as a separate tar 
 
 ```{bash}
 git clone https://github.com/HaukeBartsch/data-transfer-station.git
-# move template configuration to /data/configuration, requires root permissions
-sudo mkdir -p /data && sudo cp -R configuration /data/configuration
 ```
 
-Use docker-compose to setup receiver and trigger services.
+Adjust the configuration files if needed, they are in the ./configuration folder.
+
+Use docker-compose to setup receiver and trigger services. You can remove the '--no-cache' option to speed up the process. In case of errors we suggest you add it back.
 
 ```{bash}
 docker compose build --no-cache && docker compose up
 ```
 
-Add the A.I. container to the system.
+Add the A.I. docker container to the host system.
 
 ```{bash}
 docker load < AI.tar
 ```
 
-Setup the runner as a cron-job. It will check the output of the trigger service and run the A.I. container if needed. You need permissions to create a /data directory.
+Setup the runner as a cron-job on the host system. It will check the output of the trigger service and run the A.I. container if needed. Perform the following steps as the root user.
 
 ```{bash}
 mkdir -p /data/logs /data/code/trigger;

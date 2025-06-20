@@ -38,23 +38,23 @@
                 },
                 {
                     "type": "exec",
-                    "cmd": [ "/usr/sbin/ror", "init", "-type", "python", "/tmp/site/proc/@StudyInstanceUID@" ]
+                    "cmd": [ "/usr/sbin/ror", "init", "-type", "python", "/data/proc/@StudyInstanceUID@" ]
                 },
                 {
                     "type": "exec",
-                    "cmd": [ "/usr/sbin/ror", "config", "--working_directory", "/tmp/site/proc/@StudyInstanceUID@", "--temp_directory", "/tmp/site/proc/@StudyInstanceUID@", "--data", "/tmp/site/archive/@StudyInstanceUID@" ]
+                    "cmd": [ "/usr/sbin/ror", "config", "--working_directory", "/data/proc/@StudyInstanceUID@", "--temp_directory", "/data/proc/@StudyInstanceUID@", "--data", "/data/site/archive/@StudyInstanceUID@" ]
                 },
                 {
                     "type": "exec",
-                    "cmd": [ "/pullSelect.sh", "/tmp/site/archive/@StudyInstanceUID@", "/tmp/site/proc/@StudyInstanceUID@/select.statement", "@StreamName@" ]
+                    "cmd": [ "/pullSelect.sh", "/data/site/archive/@StudyInstanceUID@", "/data/proc/@StudyInstanceUID@/select.statement", "@StreamName@" ]
                 },
                 {
                     "type": "exec",
-                    "cmd": [ "/usr/sbin/ror", "config", "--working_directory", "/tmp/site/proc/@StudyInstanceUID@", "--call", "python /app/segm.py /data", "-select", "/tmp/site/proc/@StudyInstanceUID@/select.statement" ]
+                    "cmd": [ "/usr/sbin/ror", "config", "--working_directory", "/data/proc/@StudyInstanceUID@", "--call", "python /app/segm.py /data", "-select", "/data/proc/@StudyInstanceUID@/select.statement" ]
                 },
                 {
                     "type": "exec",
-                    "cmd": [ "/addJob.sh", "/tmp/site/archive/@StudyInstanceUID@", "/tmp/site/proc/@StudyInstanceUID@", "@destination@", "@StreamName@" ]
+                    "cmd": [ "/addJob.sh", "/data/site/archive/@StudyInstanceUID@", "/data/proc/@StudyInstanceUID@", "@destination@", "@StreamName@" ]
                 }
             ],
             "trigger-series": []

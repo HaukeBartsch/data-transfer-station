@@ -20,6 +20,14 @@ services:
       - /data:/data
       - ./configuration:/configuration
 
+  logrotate:
+    container_name: logrotate
+    image: logrotate
+    build: ./logrotate
+    restart: unless-stopped
+    volumes:
+      - /data/logs:/data/logs
+
   #fail2ban:
   #  container_name: fail2ban
   #  image: linuxserver/fail2ban:latest

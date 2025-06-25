@@ -44,7 +44,7 @@ Setup the runner as a cron-job on the host system. It will check the output of t
 ```{bash}
 sudo su
 mkdir -m 755 -p /data/code/trigger;
-cp runner/runOneJob.sh /data/code/trigger;
+cp runner/runOneJob.sh runner/BackendLogging.py /data/code/trigger/;
 ( crontab -l; echo '*/1 * * * * /usr/bin/flock -n /data/logs/runOneJob.pid /data/code/trigger/runOneJob.sh >> /data/logs/runOneJob.log 2>&1' ) | crontab - ;
 
 # get a copy of ror, check your platform code

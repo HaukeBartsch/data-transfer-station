@@ -160,7 +160,8 @@ while IFS= read -r line; do
 	    # send the records in output_json to REDCap for the current project
 	    if [ -e "${output_json}" ]; then
 	        realpath_output_json=`realpath ${output_json}`
-	        echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] No sending to REDCap... sendToREDCap.php \"${project}\" \"${realpath_output_json}\""
+	        echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] No sending to REDCap, only logging for \"${project}\" \"${realpath_output_json}\""
+            
 	        #/usr/bin/php /var/www/html/applications/Workflows/php//sendToREDCap.php "${project}" "${realpath_output_json}"
 	        #echo "`date +'%Y-%m-%d %H:%M:%S'`: Send to REDCap done (\"${project}\" \"${realpath_output_json}\")."
 	    fi

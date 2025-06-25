@@ -4,8 +4,7 @@ A self-hosted digital platform for the secure image exchange and processing inte
 
 ### Technical details
 
-A DICOM aware platform that allows for in-house image processing using AI. Receives medical images from PACS and can trigger AI processing pipelines including 
-routing of incoming and outgoing images on the network. 
+A DICOM aware platform that allows for in-house image processing using AI. Receives medical images from PACS and can trigger AI processing pipelines including routing of incoming and outgoing images on the network. 
 
 With Data Transfer Station you participate in the hospital network as a
 fully automated medical service. Radiologists will be sending you an exam, processing

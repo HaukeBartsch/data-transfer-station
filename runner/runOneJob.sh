@@ -133,7 +133,7 @@ while IFS= read -r line; do
     numStudyInstanceUIDs=${#listOutputStudyInstanceUID[@]}
     for (( i=0; i<${numStudyInstanceUIDs}; i++ ));
     do
-	    echo "TEST StudyInstanceUID: ${listOutputStudyInstanceUID[$i]}"
+	    echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] TEST StudyInstanceUID: ${listOutputStudyInstanceUID[$i]}"
 	    #if [[ "${listOutputStudyInstanceUID[$i]}" != *"${inputAllStudyInstanceUID}"* ]]; then
 	    #    echo "FOUND error output for \"${listOutputStudyInstanceUID[$i]}\", not in \"${inputAllStudyInstanceUID}\""
 	    #    StudyInstanceUIDError="Error: Output StudyInstanceUID \"${listOutputStudyInstanceUID[$i]}\" is not found in the input folder."
@@ -161,7 +161,9 @@ while IFS= read -r line; do
 	    if [ -e "${output_json}" ]; then
 	        realpath_output_json=`realpath ${output_json}`
 	        echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] No sending to REDCap, only logging for \"${project}\" \"${realpath_output_json}\""
-            
+            output_string = $(jq -c '.' < "${output_json}")
+            ./BackendLogging.py --status "OK" --message "$output_string"
+            # ./BackendLogging.py --tumor_size "42"
 	        #/usr/bin/php /var/www/html/applications/Workflows/php//sendToREDCap.php "${project}" "${realpath_output_json}"
 	        #echo "`date +'%Y-%m-%d %H:%M:%S'`: Send to REDCap done (\"${project}\" \"${realpath_output_json}\")."
 	    fi

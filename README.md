@@ -42,7 +42,7 @@ docker load < AI.tar
 Setup the runner as a cron-job on the host system. It will check the output of the trigger service and run the A.I. container if needed. Perform the following steps as the root user.
 
 ```{bash}
-mkdir -p /data/code/trigger;
+sudo mkdir -m 755 -p /data/code/trigger;
 cp runner/runOneJob.sh /data/code/trigger;
 ( crontab -l; echo '*/1 * * * * /usr/bin/flock -n /data/logs/runOneJob.pid /data/code/trigger/runOneJob.sh >> /data/logs/runOneJob.log 2>&1' ) | crontab - ;
 

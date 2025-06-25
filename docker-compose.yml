@@ -7,10 +7,7 @@ services:
     ports:
       - 11112:11112
     volumes:
-      - /data/site/archive:/data/site/archive
-      - /data/site/raw:/data/site/raw
-      - /data/site/.arrived:/data/site/.arrived
-      - /data/logs:/root/logs
+      - /data:/data
   
   trigger:
     container_name: trigger
@@ -20,11 +17,7 @@ services:
     depends_on:
       - receiver
     volumes:
-      - /data/site/archive:/data/site/archive
-      - /data/site/raw:/data/site/raw
-      - /data/site/.arrived:/data/site/.arrived
-      - /data/logs:/data/logs
-      - /data/code:/data/code
+      - /data:/data
       - ./configuration:/configuration
 
   #fail2ban:

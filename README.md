@@ -57,7 +57,7 @@ If the setup worked the receiver should be accessible on port 11112 (DICOM). You
 
 ```{bash}
 # apt install dcmtk
-storescu -aet me -aec me -nh +sd +r localhost 11112 <data-folder>
+storescu -v -aet FIONA -aec AICORE1 -nh +sd +r localhost 11112 <data-folder>
 ```
 
 If the above was successful you should see the data appearing in the archive and raw folders.

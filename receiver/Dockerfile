@@ -16,7 +16,7 @@ RUN apt update && apt install -y procps net-tools jq dcmtk cron wget cmake gcc g
 COPY storectl.sh /root/
 COPY processSingleFile3.py /root/
 COPY heartbeat.sh /root/
-COPY config.json /data/config/config.json
+COPY config.json /config.json
 COPY classifyRules.json /root/
 # exchange the default storescp with one that includes some private SOPClasses
 COPY storescp.cfg /root/storescp.cfg
@@ -32,7 +32,7 @@ RUN mkdir -p /root/logs \
 RUN chmod 0744 /root/storectl.sh
 RUN chmod 0744 /root/heartbeat.sh
 
-# Lets use a default project name "PROJ". We need a corresponding entry in /data/config/config.json.
+# Lets use a default project name "PROJ". We need a corresponding entry in /config.json.
 RUN crontab -l | { cat; echo "*/10 * * * * /root/storectl.sh start PROJ"; } | crontab -
 RUN crontab -l | { cat; echo "*/10 * * * * python3 /root/processSingleFile3.py start PROJ"; } | crontab -
 RUN crontab -l | { cat; echo "* * * * * /root/heartbeat.sh PROJ"; } | crontab -
@@ -55,7 +55,7 @@ ENV DCMDICTPATH=/usr/share/libdcmtk17/dicom.dic
 
 WORKDIR /root/
 
-# we will listen to this port for incoming DICOMs (needs to match what is in /data/config/config.json)
+# we will listen to this port for incoming DICOMs (needs to match what is in /config.json)
 EXPOSE 11112
 
 CMD [ "cron", "-f" ]

@@ -55,6 +55,10 @@
                 {
                     "type": "exec",
                     "cmd": [ "/addJob.sh", "/data/site/archive/@StudyInstanceUID@", "/data/proc/@StudyInstanceUID@", "@destination@", "@StreamName@" ]
+                },
+                {
+                    "type": "exec",
+                    "cmd": [ "chmod", "-R", "777", "/data/proc/@StudyInstanceUID@" ]
                 }
             ],
             "trigger-series": []

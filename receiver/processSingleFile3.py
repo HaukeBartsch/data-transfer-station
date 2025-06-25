@@ -1114,7 +1114,7 @@ if __name__ == "__main__":
 
         # try to read the config file from this machine
         datadir = '/data'
-        configFilename = '/data/config/config.json'
+        configFilename = '/config.json'
         settings = {}
         with open(configFilename,'r') as f:
                 settings = json.load(f)

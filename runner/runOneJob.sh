@@ -225,4 +225,18 @@ if [ ! -z "${pattern}" ]; then
   echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] pattern to delete is: \"$pattern\" used on \"$input\""
   sed  "$pattern" "$input" > "$input"
 fi
+
+# clear up old proc folders
+for u in `find /data/proc/ -type f -mmin -60 | cut -d'/' -f1-4 | sort | uniq`; do
+    echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] remove old proc folder: $u (older than 60 minutes)"
+    rm -rf "$u"
+done
+
+# clear up old archive folders
+for u in `find /data/site/archive/ -type f -mtime -7 | cut -d'/' -f1-5 | sort | uniq`; do
+    echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] remove old archive folders: $u (older than one week)"
+    rm -rf "$u"
+done
+
+
 echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] End processing"

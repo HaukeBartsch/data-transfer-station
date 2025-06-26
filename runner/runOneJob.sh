@@ -171,7 +171,7 @@ while IFS= read -r line; do
 	    if [ -e "${output_json}" ]; then
 	        realpath_output_json=`realpath ${output_json}`
 	        echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] No sending to REDCap, only logging for \"${project}\" \"${realpath_output_json}\""
-            output_string = $(jq -c '.' < "${output_json}")
+            output_string=$(jq -c '.' < "${output_json}")
             /data/code/trigger/BackendLogging.py --status "OK" --accession_number "${AccessionNumber}" --study_instance_uid "${StudyInstanceUID}" --message "$output_string"
 
             # extract the tumor size from output_json and send a separate log message

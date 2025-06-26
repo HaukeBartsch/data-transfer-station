@@ -137,13 +137,13 @@ while IFS= read -r line; do
     numStudyInstanceUIDs=${#listOutputStudyInstanceUID[@]}
     for (( i=0; i<${numStudyInstanceUIDs}; i++ ));
     do
-	    echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] TEST StudyInstanceUID: ${listOutputStudyInstanceUID[$i]}"
+	    echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] check for StudyInstanceUID: ${listOutputStudyInstanceUID[$i]}, needs to be in input"
 	    #if [[ "${listOutputStudyInstanceUID[$i]}" != *"${inputAllStudyInstanceUID}"* ]]; then
 	    #    echo "FOUND error output for \"${listOutputStudyInstanceUID[$i]}\", not in \"${inputAllStudyInstanceUID}\""
 	    #    StudyInstanceUIDError="Error: Output StudyInstanceUID \"${listOutputStudyInstanceUID[$i]}\" is not found in the input folder."
 	    #fi
 	    if grep -q "${listOutputStudyInstanceUID[$i]}" <<< "${inputAllStudyInstanceUID}"; then
-	        echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] NO ERROR, found the string with GREP"
+	        #echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] NO ERROR, found the string with GREP"
 	        StudyInstanceUIDError=""
 	    else
 	        echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] ERROR, string  \"${listOutputStudyInstanceUID[$i]}\" not in \"${inputAllStudyInstanceUID}\" USING GREP"
@@ -172,7 +172,7 @@ while IFS= read -r line; do
 	    # send the records in output_json to REDCap for the current project
 	    if [ -e "${output_json}" ]; then
 	        realpath_output_json=`realpath ${output_json}`
-	        echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] No sending to REDCap, only logging for \"${project}\" \"${realpath_output_json}\""
+	        echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] Logging for \"${project}\" \"${realpath_output_json}\""
             output_string=$(jq -c '.' < "${output_json}")
             /data/code/trigger/BackendLogging.py --status "OK" --accession_number "${AccessionNumber}" --study_instance_uid "${StudyInstanceUID}" --message "found an output.json"
 
@@ -197,7 +197,7 @@ while IFS= read -r line; do
                 /data/code/trigger/BackendLogging.py --status "ERROR" --message "storescu not found in path, cannot send data to PACS." --accession_number "${AccessionNumber}" --study_instance_uid "${StudyInstanceUID}"
             else
                 echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] Sending output data to PACS using storescu \"$AETitle\" \"$IP\" \"$PORT\""
-                ${storescu} -nh -aec ${OwnAETitle} -aet ${AETitle} +sd +r ${IP} ${PORT} "${ror_folder_path}_output"
+                ${storescu} -nh -aec ${OwnAETitle} -aet ${AETitle} +sd +r ${IP} ${PORT} "${ror_folder_path}_output" >> /data/logs/storescu_send_to_PACS.log 2>&1
                 /data/code/trigger/BackendLogging.py --status "OK" --message "send data in ${ror_folder_path}_output to PACS ${AETitle} ${IP} ${PORT}" --accession_number "${AccessionNumber}" --study_instance_uid "${StudyInstanceUID}"
             fi
 

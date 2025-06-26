@@ -101,6 +101,8 @@ while IFS= read -r line; do
     if [ ! -d "${ror_folder_path}" ]; then
 	    echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] Error: trigger did not create folder for job: $job_number"
 	    cat "/tmp/${dirnam}run.log"
+        log_str = $(cat "/tmp/${dirnam}run.log")
+        ./BackendLogging.py --status "ERROR" --message "trigger did not create folder for job: $job_number, $log_str"
 	    continue
     fi
     chmod gou+rx "${ror_folder_path}"
@@ -117,10 +119,12 @@ while IFS= read -r line; do
     outputAllStudyInstanceUID=$(find "${ror_folder_path}_output" -type f ! -name '*.json' ! -name '*.log' -print | xargs -I'{}' dcmdump +P StudyInstanceUID {} | cut -d '[' -f2 | cut -d']' -f1 | sort | uniq)
     if [ -z "$inputAllStudyInstanceUID" ]; then
 	    echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] Error: no studies in input"
+        ./BackendLogging.py --status "ERROR" --message "no studies in input"
 	    continue
     fi
     if [ -z "$outputAllStudyInstanceUID" ]; then
 	    echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] Warning: no studies in output"
+        ./BackendLogging.py --status "ERROR" --message "no studies in output"
 	    # We can still have an output.json file here for REDCap!
 	    # continue
     fi
@@ -163,13 +167,16 @@ while IFS= read -r line; do
 	        echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] No sending to REDCap, only logging for \"${project}\" \"${realpath_output_json}\""
             output_string = $(jq -c '.' < "${output_json}")
             ./BackendLogging.py --status "OK" --message "$output_string"
+            # extract the tumor size from output_json and send a separate log message
             # ./BackendLogging.py --tumor_size "42"
+            #
 	        #/usr/bin/php /var/www/html/applications/Workflows/php//sendToREDCap.php "${project}" "${realpath_output_json}"
 	        #echo "`date +'%Y-%m-%d %H:%M:%S'`: Send to REDCap done (\"${project}\" \"${realpath_output_json}\")."
 	    fi
     else
         echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] Error: at least one of the StudyInstanceUID's in the output does not appear in the input (${line}). Fix your container! Data is ignored..."
 	    echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh]    input: \"${inputAllStudyInstanceUID}\" != output: \"${outputAllStudyInstanceUID}\""
+        ./BackendLogging.py --status "ERROR" --message "at least one of the StudyInstanceUID's in the output does not appear in the input (${line}). Fix your container! Data is ignored..."
     fi
     
     # ok, if we are done we should mark this as done? Or is the exists of the folder sufficient?

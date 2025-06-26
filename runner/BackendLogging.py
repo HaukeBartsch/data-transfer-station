@@ -18,6 +18,7 @@ class BackendLoggingSQL():
             # columns definition here
             sa.Column('datetime', sa.DateTime),
             sa.Column('accession_number', sa.String),
+            sa.Column('study_instance_uid', sa.String),
             sa.Column('user', sa.String),
             sa.Column('status', sa.String),
             sa.Column('error_message', sa.String),
@@ -30,6 +31,7 @@ class BackendLoggingSQL():
             # columns definition here
             sa.Column('datetime', sa.DateTime),
             sa.Column('accession_number', sa.String),
+            sa.Column('study_instance_uid', sa.String),
             sa.Column('tumor_size', sa.Float),
         )
 
@@ -71,6 +73,7 @@ if __name__ == '__main__':
                     prog='BackendLogging',
                     description='Log messages and tumor sizes to a SQL database')
     parser.add_argument('-a', '--accession_number', type=str, help='Accession number for the log entry')
+    parser.add_argument('-i', '--study_instance_uid', type=str, help='StudyInstanceUID in case there is no accession number')
     parser.add_argument('-s', '--status', type=str, help='Status string (OK,ERROR) for the log entry')
     parser.add_argument('-m', '--message', type=str, help='Message string for the log entry')
     parser.add_argument('-t', '--tumor_size', type=float, help='Tumor size')
@@ -100,6 +103,7 @@ if __name__ == '__main__':
     if args.message is not None:
         c.save_log([{'datetime': datetime.datetime.now(),
                     'accession_number': args.accesson_number,
+                    'study_instance_uid': args.study_instance_uid,
                     'user': args.user,
                     'status': args.status,
                     'error_message': args.message }
@@ -107,5 +111,6 @@ if __name__ == '__main__':
     if args.tumor_size is not None:
         c.save_prediction([{'datetime': datetime.datetime.now(),
                     'accession_number': args.accession_number,
+                    'study_instance_uid': args.study_instance_uid,
                     'tumor_size': args.tumor_size }
                 ])

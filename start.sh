@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 # check if we are in the correct directory
 if [ ! -e "runner/runOneJob.sh" ]; then

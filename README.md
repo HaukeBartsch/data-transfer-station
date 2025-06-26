@@ -14,7 +14,7 @@ The setup describes the roll-out in a docker/docker-compose environment.
 
 ## Setup
 
-Make sure that the host system supports docker, cron, python3-sqlalchemy, jq, and dcmtk.
+Make sure that the host system supports docker, cron, python3-sqlalchemy, jq, and dcmtk. We will assume that you start this process as the root user in /root/.
 
 Checkout this repository. You will also need the A.I. service as a separate docker-tar file (see below).
 

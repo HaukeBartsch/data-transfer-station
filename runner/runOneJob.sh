@@ -170,6 +170,19 @@ while IFS= read -r line; do
             # extract the tumor size from output_json and send a separate log message
             # ./BackendLogging.py --tumor_size "42"
             #
+
+            # last step is sending the image data back to PACS, requires dcmtk to be installed and in the path
+            storescu=$(which storescu)
+            # path_to_configuration_config_json="/root/data-transfer-station/configuration/config.json"
+            # hope all we need is in destination now
+            if [ -z "${storescu}" ]; then
+                echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] Error: storescu not found in path, cannot send data to PACS."
+                ./BackendLogging.py --status "ERROR" --message "storescu not found in path, cannot send data to PACS."
+            else
+                echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] Sending output data to PACS using storescu..."
+                # /usr/bin/storescu -nh -aec DICOM_STORAGE -aet FIONA +sd +r -d XXXXX.ihelse.net PORT "${ror_folder_path}_output"
+            fi
+
 	        #/usr/bin/php /var/www/html/applications/Workflows/php//sendToREDCap.php "${project}" "${realpath_output_json}"
 	        #echo "`date +'%Y-%m-%d %H:%M:%S'`: Send to REDCap done (\"${project}\" \"${realpath_output_json}\")."
 	    fi

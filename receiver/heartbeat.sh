@@ -13,8 +13,8 @@
 
 # read in the configuration file
 
-PARENTIP=`cat /data/config/config.json | jq -r ".DICOMIP"`
-PARENTPORT=`cat /data/config/config.json | jq -r ".DICOMPORT"`
+PARENTIP=`cat /config.json | jq -r ".DICOMIP"`
+PARENTPORT=`cat /config.json | jq -r ".DICOMPORT"`
 
 SERVERDIR=`dirname "$(readlink -f "$0")"`
 log=${SERVERDIR}/logs/heartbeat.log
@@ -24,8 +24,8 @@ if [ -z "$projname" ]; then
     projname="ABCD"
 fi
 if [ "$projname" != "ABCD" ]; then
-    PARENTIP=`cat /data/config/config.json | jq -r ".SITES.${projname}.DICOMIP"`
-    PARENTPORT=`cat /data/config/config.json | jq -r ".SITES.${projname}.DICOMPORT"`
+    PARENTIP=`cat /config.json | jq -r ".SITES.${projname}.DICOMIP"`
+    PARENTPORT=`cat /config.json | jq -r ".SITES.${projname}.DICOMPORT"`
     log=${SERVERDIR}/logs/heartbeat${projname}.log
 fi
 

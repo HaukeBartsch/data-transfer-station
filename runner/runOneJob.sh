@@ -186,6 +186,8 @@ while IFS= read -r line; do
             IP=$(echo "${destination}" | jq -r '.IP')
             PORT=$(echo "${destination}" | jq -r '.PORT')
 
+	        echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] extract destination from ${destination} AETitle: ${AETitle}, IP: ${IP}, PORT: ${PORT}"
+
             # last step is sending the image data back to PACS, requires dcmtk to be installed and in the path
             storescu=$(which storescu)
             # path_to_configuration_config_json="/root/data-transfer-station/configuration/config.json"

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import sqlalchemy as sa
 from typing import List,Dict,Text,Any
-import datetime, os, json, sys, argparse
+import datetime, os, json, argparse
 
 class BackendLoggingSQL():
     def __init__(self, host, port, dbname, driver):
@@ -46,7 +46,7 @@ class BackendLoggingSQL():
         if not log_table_exists and not prediciton_table_exist:
             self.metadata_obj.create_all(self.engine)
         elif log_table_exists != prediciton_table_exist:
-            raise Exception("Table creation failed, make sure to have in the database all requried tables.  Or remove all user generated tables (with drop_tables) and initialize this class again.")
+            raise Exception("Table creation failed, make sure to have in the database all requried tables. Or remove all user generated tables (with drop_tables) and initialize this class again.")
 
     def drop_tables(self):
         self.log_table.drop(self.engine)

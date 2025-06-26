@@ -154,7 +154,7 @@ while IFS= read -r line; do
 
     # Search for output.json in output folder, if it is present, then parse it into data fields.
     # If all the data necessery for RedCap transfer found, try to send it to redcap
-    output_json=$(ls "${ror_folder_path}_output/redcap/*/output.json")
+    output_json=$(find "${ror_folder_path}_output" -type f -name "output.json" | head -1)
     # we need the AccessionNumber from the generated output - should be the same as the one in the input
     dcmdump=$(which dcmdump)
     if [ -z "${dcmdump}" ]; then

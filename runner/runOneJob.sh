@@ -161,9 +161,10 @@ while IFS= read -r line; do
         echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] Error: dcmdump not found in path, cannot process DICOM files."
         /data/code/trigger/BackendLogging.py --status "ERROR" --message "dcmdump not found in path, install dcmtk"
     fi
-    AccessionNumber=$(dcmdump +P AccessionNumber "${ror_folder_path}_output/reports/*_0.dcm" | cut -d'[' -f2 | cut -d']' -f1)
-    StudyInstanceUID=$(dcmdump +P StudyInstanceUID "${ror_folder_path}_output/reports/*_0.dcm" | cut -d'[' -f2 | cut -d']' -f1)
-    echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] AccessionNumber from dcm: ${AccessionNumber}, StudyInstanceUID from dcm: ${StudyInstanceUID}"
+    report_dcm=$(find "${ror_folder_path}_output/reports" -type f -name "*_0.dcm" | head -1)
+    AccessionNumber=$(dcmdump +P AccessionNumber "${report_dcm}" | cut -d'[' -f2 | cut -d']' -f1)
+    StudyInstanceUID=$(dcmdump +P StudyInstanceUID "${report_dcm}" | cut -d'[' -f2 | cut -d']' -f1)
+    echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] AccessionNumber from dcm [${report_dcm}]: ${AccessionNumber}, StudyInstanceUID from dcm: ${StudyInstanceUID}"
 
     if [ -z "${StudyInstanceUIDError}" ]; then
         echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] only valid data in output folder, send to FIONA..."

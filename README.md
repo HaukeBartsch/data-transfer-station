@@ -16,7 +16,7 @@ The setup describes the roll-out in a docker/docker-compose environment.
 
 Make sure that the host system supports docker, cron, python3-sqlalchemy, wget, jq, and dcmtk. We will assume that you start this process as the root user in /root/.
 
-Checkout this repository.
+Clone this repository.
 
 ```{bash}
 cd /root/
@@ -30,14 +30,14 @@ Adjust the configuration files in ./configuration/. Important settings are in se
 Add the A.I. docker container to the host system.
 
 ```{bash}
-docker load < AI.tar
+docker load < segm_ec_vibe.tar
 ```
 
-Check that a new docker container exists with the name:tag "segm_ec_vibe:latest". This name is referenced in the configuration/select_statement.json file.
+Check that a new docker container exists with the name and tag "segm_ec_vibe:latest". This name is referenced in ./configuration/select_statement.json.
 
 ### Start the setup
 
-We use docker-compose to setup receiver and trigger services. In order to ensure that all directories exist before this is done a 'start.sh' script is provided that first creates the folders in /data and afterwards does a 'docker compose up'.
+We use docker-compose to setup receiver and trigger services. In order to ensure that all directories exist before this is done a './start.sh' script is provided that first creates the folders in /data and afterwards does a 'docker compose up'. To create the folders and copy files into them the script will ask for sudo permissions.
 
 ```bash
 ./start.sh

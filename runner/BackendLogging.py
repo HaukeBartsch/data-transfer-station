@@ -103,10 +103,15 @@ if __name__ == '__main__':
             raise Exception("Configuration file does not contain logging section")
 
     # Initialize the BackendLoggingSQL class with the configuration
-    host = config.get("host", "localhost")
-    port = config.get("port", 3306)
-    dbname = config.get("dbname", "mydatabase")
-    driver = config.get("driver", "17")
+    host = "localhost"
+    port = 3306
+    dbname = "mydatabase"
+    driver = "17"
+    if config is not None:
+        host = config.get("host", "localhost")
+        port = config.get("port", 3306)
+        dbname = config.get("dbname", "mydatabase")
+        driver = config.get("driver", "17")
     c = BackendLoggingSQL(host, port, dbname, driver)
 
     if args.message is not None:

@@ -175,7 +175,7 @@ while IFS= read -r line; do
             output_string = $(jq -c '.' < "${output_json}")
             /data/code/trigger/BackendLogging.py --status "OK" --accession_number "${AccessionNumber}" --study_instance_uid "${StudyInstanceUID}" --message "$output_string"
             # extract the tumor size from output_json and send a separate log message
-            tumor_size=$(jq -r '.[]|select(.field_name==\"physical_size\")|.value' "${output_json}")
+            tumor_size=$(jq -r '.[]|select(.field_name=="physical_size")|.value' "${output_json}")
             /data/code/trigger/BackendLogging.py --tumor_size "42" --accession_number "${AccessionNumber}" --study_instance_uid "${StudyInstanceUID}"
             #
 
@@ -193,7 +193,7 @@ while IFS= read -r line; do
                 echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] Error: storescu not found in path, cannot send data to PACS."
                 /data/code/trigger/BackendLogging.py --status "ERROR" --message "storescu not found in path, cannot send data to PACS." --accession_number "${AccessionNumber}" --study_instance_uid "${StudyInstanceUID}"
             else
-                echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] Sending output data to PACS using storescu..."
+                echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] Sending output data to PACS using storescu \"$AETitle\" \"$IP\" \"$PORT\""
                 ${storescu} -nh -aec ${OwnAETitle} -aet ${AETitle} +sd +r ${IP} ${PORT} "${ror_folder_path}_output"
                 /data/code/trigger/BackendLogging.py --status "OK" --message "send data in ${ror_folder_path}_output to PACS ${AETitle} ${IP} ${PORT}" --accession_number "${AccessionNumber}" --study_instance_uid "${StudyInstanceUID}"
             fi

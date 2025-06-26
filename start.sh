@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # check if we are in the correct directory
-if [ ! -e runner/runOneJob.sh ]; then
+if [ ! -e "runner/runOneJob.sh" ]; then
     echo "Please run this script from the root of the repository."
     exit 1
 fi
@@ -16,7 +16,8 @@ test -d /data/proc || sudo mkdir -m 755 -p /data/proc
 
 # copy over the runner code
 sudo mkdir -m 755 -p /data/code/trigger;
-sudo cp runner/runOneJob.sh runner/BackendLogging.py /data/code/trigger/;
+sudo cp runner/runOneJob.sh /data/code/trigger/;
+sudo cp runner/BackendLogging.py /data/code/trigger/;
 sudo chmod +x /data/code/trigger/runOneJob.sh;
 sudo chmod +x /data/code/trigger/BackendLogging.py;
 if ! crontab -l | grep -qs "runOneJob.sh"; then

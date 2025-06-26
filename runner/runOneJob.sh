@@ -176,7 +176,7 @@ while IFS= read -r line; do
             /data/code/trigger/BackendLogging.py --status "OK" --accession_number "${AccessionNumber}" --study_instance_uid "${StudyInstanceUID}" --message "$output_string"
             # extract the tumor size from output_json and send a separate log message
             tumor_size=$(jq -r '.[]|select(.field_name=="physical_size")|.value' "${output_json}")
-            /data/code/trigger/BackendLogging.py --tumor_size "42" --accession_number "${AccessionNumber}" --study_instance_uid "${StudyInstanceUID}"
+            /data/code/trigger/BackendLogging.py --tumor_size "${tumor_size}" --accession_number "${AccessionNumber}" --study_instance_uid "${StudyInstanceUID}"
             #
 
             # destination contains the information for sending the data

@@ -99,7 +99,7 @@ if __name__ == '__main__':
         with open(path_to_configuration_config_json, 'r') as f:
             conf = json.load(f)
             if "logging" in conf:
-                config = conf["logging"]
+                config = conf["logging"][0]
             else:
                 raise Exception("Configuration file does not contain logging section")
 
@@ -109,10 +109,10 @@ if __name__ == '__main__':
     dbname = "mydatabase"
     driver = "17"
     if config is not None:
-        host = config.get("host", "localhost")
-        port = config.get("port", 3306)
-        dbname = config.get("dbname", "mydatabase")
-        driver = config.get("driver", "17")
+        host = config["host"] # "localhost")
+        port = config["port"] #  3306)
+        dbname = config["dbname"] # "mydatabase")
+        driver = config["driver"] # "17")
     c = BackendLoggingSQL(host, port, dbname, driver)
 
     if args.message is not None:

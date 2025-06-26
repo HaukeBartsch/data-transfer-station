@@ -14,9 +14,9 @@ The setup describes the roll-out in a docker/docker-compose environment.
 
 ## Setup
 
-Make sure that the host system supports docker, cron, python3-sqlalchemy, jq, and dcmtk. We will assume that you start this process as the root user in /root/.
+Make sure that the host system supports docker, cron, python3-sqlalchemy, wget, jq, and dcmtk. We will assume that you start this process as the root user in /root/.
 
-Checkout this repository. You will also need the A.I. service as a separate docker-tar file (see below).
+Checkout this repository.
 
 ```{bash}
 cd /root/
@@ -24,7 +24,8 @@ git clone https://github.com/HaukeBartsch/data-transfer-station.git
 cd data-transfer-station
 ```
 
-Adjust the configuration files if needed, they are in the ./configuration folder.
+Adjust the configuration files in ./configuration/. Important settings are in select_statements.json, which contains the name of A.I. docker container (AIcore/docker_image) and config.json which contains the name of the incoming AETitle for the processing stream (Streams/trigger/AETitleCalled (AICORE1)), the information for the external logging server (logging) and the destination for generated DICOM files (Streams[0]/destination[0]).
+
 
 Add the A.I. docker container to the host system.
 

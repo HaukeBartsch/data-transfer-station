@@ -5,7 +5,7 @@
     "timeout": 16,
     "log": "/data/logs/trigger.log",
     "logging": [
-        { "host": "localhost", "port": 3306, "dbname": "", "driver": "" }
+        { "host": "localhost", "port": 1433, "dbname": "master", "driver": "17" }
     ],
     "Streams": [
         {
@@ -18,8 +18,8 @@
             },
             "destination": [
                 {
-                    "AETitle": "FIONA",
-                    "IP": "fiona.ihelse.net",
+                    "AETitle": "DICOM_QR_SCP",
+                    "IP": "sectradcmimport.ihelse.net",
                     "PORT": "7280",
                     "filter": [
                         { "SeriesDescription": "*" }

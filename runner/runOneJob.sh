@@ -158,15 +158,14 @@ while IFS= read -r line; do
     # we need the AccessionNumber from the generated output - should be the same as the one in the input
     dcmdump=$(which dcmdump)
     if [ -z "${dcmdump}" ]; then
-        echo "Error: dcmdump not found in path, cannot process DICOM files."
+        echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] Error: dcmdump not found in path, cannot process DICOM files."
+        /data/code/trigger/BackendLogging.py --status "ERROR" --message "dcmdump not found in path, install dcmtk"
     fi
     AccessionNumber=$(dcmdump +P AccessionNumber "${ror_folder_path}_output/reports/*_0.dcm" | cut -d'[' -f2 | cut -d']' -f1)
     StudyInstanceUID=$(dcmdump +P StudyInstanceUID "${ror_folder_path}_output/reports/*_0.dcm" | cut -d'[' -f2 | cut -d']' -f1)
 
     if [ -z "${StudyInstanceUIDError}" ]; then
         echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] only valid data in output folder, send to FIONA..."
-	    # /usr/bin/storescu -nh -aec DICOM_STORAGE -aet FIONA +sd +r -d XXXXX.ihelse.net PORT "${ror_folder_path}_output"
-        # /var/www/html/server/utils/s2m.sh "${ror_folder_path}/output/"
 	
 	    # send the records in output_json to REDCap for the current project
 	    if [ -e "${output_json}" ]; then
@@ -174,10 +173,10 @@ while IFS= read -r line; do
 	        echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] No sending to REDCap, only logging for \"${project}\" \"${realpath_output_json}\""
             output_string = $(jq -c '.' < "${output_json}")
             /data/code/trigger/BackendLogging.py --status "OK" --accession_number "${AccessionNumber}" --study_instance_uid "${StudyInstanceUID}" --message "$output_string"
+
             # extract the tumor size from output_json and send a separate log message
             tumor_size=$(jq -r '.[]|select(.field_name=="physical_size")|.value' "${output_json}")
             /data/code/trigger/BackendLogging.py --tumor_size "${tumor_size}" --accession_number "${AccessionNumber}" --study_instance_uid "${StudyInstanceUID}"
-            #
 
             # destination contains the information for sending the data
             OwnAETitle="AICORE1"
@@ -203,7 +202,7 @@ while IFS= read -r line; do
 	    fi
     else
         echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] Error: at least one of the StudyInstanceUID's in the output does not appear in the input (${line}). Fix your container! Data is ignored..."
-	    echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh]    input: \"${inputAllStudyInstanceUID}\" != output: \"${outputAllStudyInstanceUID}\""
+	    echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] input: \"${inputAllStudyInstanceUID}\" != output: \"${outputAllStudyInstanceUID}\""
         /data/code/trigger/BackendLogging.py --status "ERROR" --message "at least one of the StudyInstanceUID's in the output does not appear in the input (${line}). Fix your container! Data is ignored..." --accession_number "${AccessionNumber}" --study_instance_uid "${StudyInstanceUID}"
     fi
     

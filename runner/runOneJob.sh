@@ -43,7 +43,7 @@ while IFS= read -r line; do
     user=`echo "${line}" | jq -r ".user"`
     date=`echo "${line}" | jq -r ".date"`
     ror_folder=`echo "${line}" | jq -r ".ror_folder"`
-    destination=`echo "${line}" | jq -r ".destination[0]"`
+    destination=`echo "${line}" | jq -r '.destination' | jq -r '.[0]'`
     ROR_CONT_OPTIONS=`echo "${line}" | jq -r ".ROR_CONT_OPTIONS" | tr -d "'"`
     if [ "${ror_folder}" = "null" ]; then
     	# if we come from the website we will not have a ror_folder as an argument (equals empty string)

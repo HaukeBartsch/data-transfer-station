@@ -76,7 +76,7 @@ while IFS= read -r line; do
 	    jobsCounter=$((jobsCounter + 1))
 	    continue
     else
-	    echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] ERROR We did not find a folder with the following name: ${ror_folder}/${dirnam}"
+	    echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] we did not find a folder with the following name: ${ror_folder}/${dirnam}"
     fi
     
     # based on our type prepare ror for this folder

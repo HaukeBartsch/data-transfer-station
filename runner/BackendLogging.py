@@ -95,12 +95,13 @@ if __name__ == '__main__':
         raise Exception("Configuration file not found at %s, edit path here" % path_to_configuration_config_json)
 
     config = None
-    with open(path_to_configuration_config_json, 'r') as f:
-        conf = json.load(f)
-        if "logging" in conf:
-            config = conf["logging"]
-        else:
-            raise Exception("Configuration file does not contain logging section")
+    if os.path.exists(path_to_configuration_config_json):
+        with open(path_to_configuration_config_json, 'r') as f:
+            conf = json.load(f)
+            if "logging" in conf:
+                config = conf["logging"]
+            else:
+                raise Exception("Configuration file does not contain logging section")
 
     # Initialize the BackendLoggingSQL class with the configuration
     host = "localhost"

@@ -154,8 +154,15 @@ while IFS= read -r line; do
 
     # Search for output.json in output folder, if it is present, then parse it into data fields.
     # If all the data necessery for RedCap transfer found, try to send it to redcap
-    output_json="${ror_folder_path}_output/output.json"
-    
+    output_json=$(ls "${ror_folder_path}_output/redcap/*/output.json")
+    # we need the AccessionNumber from the generated output - should be the same as the one in the input
+    dcmdump=$(which dcmdump)
+    if [ -z "${dcmdump}" ]; then
+        echo "Error: dcmdump not found in path, cannot process DICOM files."
+    fi
+    AccessionNumber=$(dcmdump +P AccessionNumber "${ror_folder_path}_output/reports/*_0.dcm" | cut -d'[' -f2 | cut -d']' -f1)
+    StudyInstanceUID=$(dcmdump +P StudyInstanceUID "${ror_folder_path}_output/reports/*_0.dcm" | cut -d'[' -f2 | cut -d']' -f1)
+
     if [ -z "${StudyInstanceUIDError}" ]; then
         echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] only valid data in output folder, send to FIONA..."
 	    # /usr/bin/storescu -nh -aec DICOM_STORAGE -aet FIONA +sd +r -d XXXXX.ihelse.net PORT "${ror_folder_path}_output"
@@ -166,9 +173,10 @@ while IFS= read -r line; do
 	        realpath_output_json=`realpath ${output_json}`
 	        echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] No sending to REDCap, only logging for \"${project}\" \"${realpath_output_json}\""
             output_string = $(jq -c '.' < "${output_json}")
-            /data/code/trigger/BackendLogging.py --status "OK" --message "$output_string"
+            /data/code/trigger/BackendLogging.py --status "OK" --accession_number "${AccessionNumber}" --study_instance_uid "${StudyInstanceUID}" --message "$output_string"
             # extract the tumor size from output_json and send a separate log message
-            # ./BackendLogging.py --tumor_size "42"
+            tumor_size=$(jq -r '.[]|select(.field_name==\"physical_size\")|.value' "${output_json}")
+            /data/code/trigger/BackendLogging.py --tumor_size "42" --accession_number "${AccessionNumber}" --study_instance_uid "${StudyInstanceUID}"
             #
 
             # destination contains the information for sending the data
@@ -183,11 +191,11 @@ while IFS= read -r line; do
             # hope all we need is in destination now
             if [ -z "${storescu}" ]; then
                 echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] Error: storescu not found in path, cannot send data to PACS."
-                /data/code/trigger/BackendLogging.py --status "ERROR" --message "storescu not found in path, cannot send data to PACS."
+                /data/code/trigger/BackendLogging.py --status "ERROR" --message "storescu not found in path, cannot send data to PACS." --accession_number "${AccessionNumber}" --study_instance_uid "${StudyInstanceUID}"
             else
                 echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] Sending output data to PACS using storescu..."
                 ${storescu} -nh -aec ${OwnAETitle} -aet ${AETitle} +sd +r ${IP} ${PORT} "${ror_folder_path}_output"
-                /data/code/trigger/BackendLogging.py --status "OK" --message "send data in ${ror_folder_path}_output to PACS ${AETitle} ${IP} ${PORT}"
+                /data/code/trigger/BackendLogging.py --status "OK" --message "send data in ${ror_folder_path}_output to PACS ${AETitle} ${IP} ${PORT}" --accession_number "${AccessionNumber}" --study_instance_uid "${StudyInstanceUID}"
             fi
 
 	        #/usr/bin/php /var/www/html/applications/Workflows/php//sendToREDCap.php "${project}" "${realpath_output_json}"
@@ -196,7 +204,7 @@ while IFS= read -r line; do
     else
         echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] Error: at least one of the StudyInstanceUID's in the output does not appear in the input (${line}). Fix your container! Data is ignored..."
 	    echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh]    input: \"${inputAllStudyInstanceUID}\" != output: \"${outputAllStudyInstanceUID}\""
-        /data/code/trigger/BackendLogging.py --status "ERROR" --message "at least one of the StudyInstanceUID's in the output does not appear in the input (${line}). Fix your container! Data is ignored..."
+        /data/code/trigger/BackendLogging.py --status "ERROR" --message "at least one of the StudyInstanceUID's in the output does not appear in the input (${line}). Fix your container! Data is ignored..." --accession_number "${AccessionNumber}" --study_instance_uid "${StudyInstanceUID}"
     fi
     
     # ok, if we are done we should mark this as done? Or is the exists of the folder sufficient?

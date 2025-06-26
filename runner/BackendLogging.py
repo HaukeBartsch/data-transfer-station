@@ -80,6 +80,15 @@ if __name__ == '__main__':
     parser.add_argument('-u', '--user', type=str, help='User name')
     args = parser.parse_args()
 
+    # store arguments in log for now
+    import logging
+    logging.basicConfig(filename="/data/logs/backend_logging.log",
+                    encoding='utf-8',
+                    level=logging.DEBUG,
+                    format='%(asctime)s.%(msecs)03d [%(levelname)s] %(message)s',
+                    datefmt='%Y-%m-%d %H:%M:%S')
+    logging.info("BackendLogging with arguments: %s" % str(args))
+
     # Find the configuration file
     path_to_configuration_config_json = "/root/data-transfer-station/configuration/config.json"
     if not os.path.exists(path_to_configuration_config_json):

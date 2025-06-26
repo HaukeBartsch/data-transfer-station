@@ -171,6 +171,12 @@ while IFS= read -r line; do
             # ./BackendLogging.py --tumor_size "42"
             #
 
+            # destination contains the information for sending the data
+            OwnAETitle="AICORE1"
+            AETitle=$(echo "${destination}" | jq -r '.AETitle')
+            IP=$(echo "${destination}" | jq -r '.IP')
+            PORT=$(echo "${destination}" | jq -r '.PORT')
+
             # last step is sending the image data back to PACS, requires dcmtk to be installed and in the path
             storescu=$(which storescu)
             # path_to_configuration_config_json="/root/data-transfer-station/configuration/config.json"
@@ -180,7 +186,8 @@ while IFS= read -r line; do
                 /data/code/trigger/BackendLogging.py --status "ERROR" --message "storescu not found in path, cannot send data to PACS."
             else
                 echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] Sending output data to PACS using storescu..."
-                # /usr/bin/storescu -nh -aec DICOM_STORAGE -aet FIONA +sd +r -d XXXXX.ihelse.net PORT "${ror_folder_path}_output"
+                ${storescu} -nh -aec ${OwnAETitle} -aet ${AETitle} +sd +r ${IP} ${PORT} "${ror_folder_path}_output"
+                /data/code/trigger/BackendLogging.py --status "OK" --message "send data in ${ror_folder_path}_output to PACS ${AETitle} ${IP} ${PORT}"
             fi
 
 	        #/usr/bin/php /var/www/html/applications/Workflows/php//sendToREDCap.php "${project}" "${realpath_output_json}"

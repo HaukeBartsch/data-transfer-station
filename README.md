@@ -19,18 +19,12 @@ Make sure that the host system supports docker, cron, python3-sqlalchemy, jq, an
 Checkout this repository. You will also need the A.I. service as a separate docker-tar file (see below).
 
 ```{bash}
+cd /root/
 git clone https://github.com/HaukeBartsch/data-transfer-station.git
+cd data-transfer-station
 ```
 
 Adjust the configuration files if needed, they are in the ./configuration folder.
-
-We use docker-compose to setup receiver and trigger services. In order to ensure that all directories exist before this is done a 'start.sh' script is provided that first creates the folders in /data and afterwards starts docker compose.
-
-```{bash}
-./start.sh
-# first testing and re-building the docker images
-# docker compose build --no-cache && docker compose up
-```
 
 Add the A.I. docker container to the host system.
 
@@ -40,25 +34,14 @@ docker load < AI.tar
 
 Check that a new docker container exists with the name:tag "segm_ec_vibe:latest". This name is referenced in the configuration/select_statement.json file.
 
+### Start the setup
 
-Setup the runner as a cron-job on the host system. It will check the output of the trigger service and run the A.I. container if needed. Perform the following steps as the root user.
+We use docker-compose to setup receiver and trigger services. In order to ensure that all directories exist before this is done a 'start.sh' script is provided that first creates the folders in /data and afterwards does a 'docker compose up'.
 
-```{bash}
-# become root
-sudo su
-
-mkdir -m 755 -p /data/code/trigger;
-cp runner/runOneJob.sh runner/BackendLogging.py /data/code/trigger/;
-chmod +x /data/code/trigger/runOneJob.sh;
-chmod +x /data/code/trigger/BackendLogging.py;
-( crontab -l; echo '*/1 * * * * /usr/bin/flock -n /data/logs/runOneJob.pid /data/code/trigger/runOneJob.sh >> /data/logs/runOneJob.log 2>&1' ) | crontab - ;
-
-# get a copy of ror, check your platform code
-wget -qO- https://github.com/mmiv-center/Research-Information-System/raw/master/components/Workflow-Image-AI/build/linux-amd64/ror > /data/code/trigger/ror;
-chmod +x /data/code/trigger/ror;
+```bash
+./start.sh
 ```
 
-The above depends on features installed on the host system. See the list at the beginning of this section.
 
 ### Test the receiver
 

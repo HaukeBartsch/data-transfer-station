@@ -65,7 +65,7 @@ import logging
 logging.basicConfig(filename=config["log"],
                     encoding='utf-8',
                     level=logging.DEBUG,
-                    format='%(asctime)s.%(msecs)03d [%(levelname)s] %(message)s',
+                    format='%(asctime)s.%(msecs)06d [%(levelname)s] %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S')
 logging.info("Start trigger.py")
     

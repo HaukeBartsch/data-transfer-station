@@ -14,7 +14,7 @@ The setup describes the roll-out in a docker/docker-compose environment.
 
 ## Setup
 
-Make sure that the host system supports docker, cron, python3-sqlalchemy, wget, jq, and dcmtk. We will assume that you start this process as the root user in /root/.
+Make sure that the host system supports docker, cron, python3-sqlalchemy, pyodbc, wget, jq, and dcmtk. We will assume that you start this process as the root user in /root/.
 
 Clone this repository.
 

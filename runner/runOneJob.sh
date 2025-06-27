@@ -28,6 +28,11 @@ echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] INFO `cat ${input} | wc -
 
 storage="/export/Workflows"
 ror="/data/code/trigger/ror"
+if [ ! -x "${ror}" ]; then
+    echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] Error: ROR not found in /data/code/trigger/ or file not executable, cannot run jobs."
+    exit 1
+fi
+
 declare -a jobsToDelete
 jobsCounter=0
 # for each job

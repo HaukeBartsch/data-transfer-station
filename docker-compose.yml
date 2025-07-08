@@ -27,6 +27,7 @@ services:
     restart: unless-stopped
     volumes:
       - /data/logs:/data/logs
+
   logger:
     container_name: logger
     image: logger

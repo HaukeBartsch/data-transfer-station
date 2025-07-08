@@ -10,6 +10,8 @@
 #         /data/code/trigger/runOneJob.sh >> /data/logs/runOneJob.log 2>&1
 #
 
+LOG_TO_SQL="docker run --rm -v /root/data-transfer-station/runner/BackendLogging.py:/BackendLogging.py  -v /data/logs/:/data/logs/ -v /root/data-transfer-station/configuration/config.json:/root/data-transfer-station/configuration/config.json logger"
+
 echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] Start processing"
 
 # test if we are the correct user (need to be processing for this to work)
@@ -107,7 +109,7 @@ while IFS= read -r line; do
 	    echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] Error: trigger did not create folder for job: $job_number"
 	    cat "/tmp/${dirnam}run.log"
         log_str=$(<"/tmp/${dirnam}run.log")
-        /data/code/trigger/BackendLogging.py --status "ERROR" --message "trigger did not create folder for job: $job_number, $log_str"
+        $LOG_TO_SQL --status "ERROR" --message "trigger did not create folder for job: $job_number, $log_str"
 	    continue
     fi
     chmod gou+rx "${ror_folder_path}"
@@ -124,12 +126,12 @@ while IFS= read -r line; do
     outputAllStudyInstanceUID=$(find "${ror_folder_path}_output" -type f ! -name '*.json' ! -name '*.log' ! -name '*.zip' -print | xargs -I'{}' dcmdump +P StudyInstanceUID {} | cut -d '[' -f2 | cut -d']' -f1 | sort | uniq)
     if [ -z "$inputAllStudyInstanceUID" ]; then
 	    echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] Error: no studies in input"
-        /data/code/trigger/BackendLogging.py --status "ERROR" --message "no studies in input"
+        $LOG_TO_SQL --status "ERROR" --message "no studies in input"
 	    continue
     fi
     if [ -z "$outputAllStudyInstanceUID" ]; then
 	    echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] Warning: no studies in output"
-        /data/code/trigger/BackendLogging.py --status "ERROR" --message "no studies in output"
+        $LOG_TO_SQL --status "ERROR" --message "no studies in output"
 	    # We can still have an output.json file here for REDCap!
 	    # continue
     fi
@@ -164,7 +166,7 @@ while IFS= read -r line; do
     dcmdump=$(which dcmdump)
     if [ -z "${dcmdump}" ]; then
         echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] Error: dcmdump not found in path, cannot process DICOM files."
-        /data/code/trigger/BackendLogging.py --status "ERROR" --message "dcmdump not found in path, install dcmtk"
+        $LOG_TO_SQL --status "ERROR" --message "dcmdump not found in path, install dcmtk"
     fi
     report_dcm=$(find "${ror_folder_path}_output/reports" -type f -name "*_0.dcm" | head -1)
     AccessionNumber=$(dcmdump +P AccessionNumber "${report_dcm}" | cut -d'[' -f2 | cut -d']' -f1)
@@ -179,11 +181,11 @@ while IFS= read -r line; do
 	        realpath_output_json=`realpath ${output_json}`
 	        echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] Logging for \"${project}\" \"${realpath_output_json}\""
             output_string=$(jq -c '.' < "${output_json}")
-            /data/code/trigger/BackendLogging.py --status "OK" --accession_number "${AccessionNumber}" --study_instance_uid "${StudyInstanceUID}" --message "found an output.json"
+            $LOG_TO_SQL --status "OK" --accession_number "${AccessionNumber}" --study_instance_uid "${StudyInstanceUID}" --message "found an output.json"
 
             # extract the tumor size from output_json and send a separate log message
             tumor_size=$(jq -r '.[]|select(.field_name=="physical_size")|.value' "${output_json}")
-            /data/code/trigger/BackendLogging.py --tumor_size "${tumor_size}" --accession_number "${AccessionNumber}" --study_instance_uid "${StudyInstanceUID}"
+            $LOG_TO_SQL --tumor_size "${tumor_size}" --accession_number "${AccessionNumber}" --study_instance_uid "${StudyInstanceUID}"
 
             # destination contains the information for sending the data
             OwnAETitle="AICORE1"
@@ -199,11 +201,11 @@ while IFS= read -r line; do
             # hope all we need is in destination now
             if [ -z "${storescu}" ]; then
                 echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] Error: storescu not found in path, cannot send data to PACS."
-                /data/code/trigger/BackendLogging.py --status "ERROR" --message "storescu not found in path, cannot send data to PACS." --accession_number "${AccessionNumber}" --study_instance_uid "${StudyInstanceUID}"
+                $LOG_TO_SQL --status "ERROR" --message "storescu not found in path, cannot send data to PACS." --accession_number "${AccessionNumber}" --study_instance_uid "${StudyInstanceUID}"
             else
                 echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] Sending output data to PACS using storescu \"$AETitle\" \"$IP\" \"$PORT\""
                 ${storescu} -nh -aec ${OwnAETitle} -aet ${AETitle} +sd +r ${IP} ${PORT} "${ror_folder_path}_output" >> /data/logs/storescu_send_to_PACS.log 2>&1
-                /data/code/trigger/BackendLogging.py --status "OK" --message "send data in ${ror_folder_path}_output to PACS ${AETitle} ${IP} ${PORT}" --accession_number "${AccessionNumber}" --study_instance_uid "${StudyInstanceUID}"
+                $LOG_TO_SQL --status "OK" --message "send data in ${ror_folder_path}_output to PACS ${AETitle} ${IP} ${PORT}" --accession_number "${AccessionNumber}" --study_instance_uid "${StudyInstanceUID}"
             fi
 
 	        #/usr/bin/php /var/www/html/applications/Workflows/php//sendToREDCap.php "${project}" "${realpath_output_json}"
@@ -212,7 +214,7 @@ while IFS= read -r line; do
     else
         echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] Error: at least one of the StudyInstanceUID's in the output does not appear in the input (${line}). Fix your container! Data is ignored..."
 	    echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] input: \"${inputAllStudyInstanceUID}\" != output: \"${outputAllStudyInstanceUID}\""
-        /data/code/trigger/BackendLogging.py --status "ERROR" --message "at least one of the StudyInstanceUID's in the output does not appear in the input (${line}). Fix your container! Data is ignored..." --accession_number "${AccessionNumber}" --study_instance_uid "${StudyInstanceUID}"
+        $LOG_TO_SQL --status "ERROR" --message "at least one of the StudyInstanceUID's in the output does not appear in the input (${line}). Fix your container! Data is ignored..." --accession_number "${AccessionNumber}" --study_instance_uid "${StudyInstanceUID}"
     fi
     
     # ok, if we are done we should mark this as done? Or is the exists of the folder sufficient?

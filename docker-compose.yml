@@ -28,6 +28,19 @@ services:
     volumes:
       - /data/logs:/data/logs
 
+  logger:
+    container_name: logger
+    image: logger
+    build: ./runner
+    restart: unless-stopped
+    depends_on:
+      - trigger
+    volumes:
+      - ./runner/BackendLogging.py:/BackendLogging.py
+      - /data/logs/:/data/logs/
+      - ./configuration/config.json:/root/data-transfer-station/configuration/config.json
+    command: python BackendLogging.py -a "someaccessionnumber" -i "someuid" --status "OK" --message "test message" -t "0.0" -u "testuser"
+
   #fail2ban:
   #  container_name: fail2ban
   #  image: linuxserver/fail2ban:latest

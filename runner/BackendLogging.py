@@ -4,11 +4,16 @@ from typing import List,Dict,Text,Any
 import datetime, os, json, argparse
 
 class BackendLoggingSQL():
-    def __init__(self, host, port, dbname, driver):
-        self.servername = "%s:%d" % (host, port)
-        self.dbname = dbname
-        self.driver = driver
-        cstring = f'mssql+pyodbc://@{self.servername}/{self.dbname}?trusted_connection=yes&driver=ODBC+Driver+{self.driver}+for+SQL+Server'
+    def __init__(self, host, port, dbname, driver, user, password):
+        cstring= sa.engine.URL.create(
+            "mssql+pyodbc",
+            username=user,
+            password=password,
+            host=host,
+            database=dbname,
+            port=port,
+            query={"driver": f"ODBC Driver {driver} for SQL Server", "TrustServerCertificate": "yes", "Trusted_Connection": "no"}
+        )
         self.engine = sa.create_engine(cstring)
         self.metadata_obj = sa.MetaData()
         self.log_table_name='log'
@@ -36,7 +41,7 @@ class BackendLoggingSQL():
         )
 
 
-        self.drop_tables()
+        #self.drop_tables()
         self.create_tables()
 
     # Create the log table if it does not exist already
@@ -113,11 +118,13 @@ if __name__ == '__main__':
         port = config["port"] #  3306)
         dbname = config["dbname"] # "mydatabase")
         driver = config["driver"] # "17")
-    c = BackendLoggingSQL(host, port, dbname, driver)
+        user = config["dbuser"] 
+        password = config["dbpassword"] 
+    c = BackendLoggingSQL(host, port, dbname, driver, user, password)
 
     if args.message is not None:
         c.save_log([{'datetime': datetime.datetime.now(),
-                    'accession_number': args.accesson_number,
+                    'accession_number': args.accession_number,
                     'study_instance_uid': args.study_instance_uid,
                     'user': args.user,
                     'status': args.status,

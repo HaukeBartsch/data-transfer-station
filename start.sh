@@ -17,10 +17,7 @@ test -d /data/proc || sudo mkdir -m 755 -p /data/proc
 
 # copy over the runner code
 sudo mkdir -m 755 -p /data/code/trigger;
-sudo cp runner/runOneJob.sh /data/code/trigger/;
-sudo cp runner/BackendLogging.py /data/code/trigger/;
 sudo chmod +x /data/code/trigger/runOneJob.sh;
-sudo chmod +x /data/code/trigger/BackendLogging.py;
 if ! crontab -l | grep -qs "runOneJob.sh"; then
     sudo bash -c "( crontab -l; echo '*/1 * * * * /usr/bin/flock -n /data/logs/runOneJob.pid /data/code/trigger/runOneJob.sh >> /data/logs/runOneJob.log 2>&1' ) | crontab - ";
 fi

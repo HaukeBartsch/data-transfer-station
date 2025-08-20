@@ -26,6 +26,11 @@ if [ ! -e /data/code/trigger/ror ]; then
     sudo chmod +x /data/code/trigger/ror;
 fi
 
+# cleanup after a reboot (keep log files but remove pid files and all the temp data in /data/site/archive/*, /data/site/raw/* and /data/proc/*)
+if ! crontab -l | grep -qs "@reboot"; then
+    sudo bash -c "( crontab -l; echo '@reboot rm -rf /data/logs/*.pid /data/proc/scp* /data/site/archive/scp* /data/site/raw/* ) | crontab - ";
+fi
+
 # This can be run by a non-root user.
 # docker compose build --no-cache
 docker compose down && docker compose build && docker compose up

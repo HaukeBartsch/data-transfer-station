@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # create a heart beat for the storescp
 # One way it can fail is if multiple associations are requested.

@@ -4,7 +4,6 @@
   "DICOMAETITLE": "FIONA",
   "DATADIR": "/data",
   "LOCALTIMEZONE": "Europe/Copenhagen",
-  "LOGDIR": "/data/logs",
   "SITES": {
     "PROJ": {
       "DICOMIP": "localhost",

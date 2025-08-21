@@ -109,7 +109,10 @@ while IFS= read -r line; do
 	    echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] Error: trigger did not create folder for job: $job_number"
 	    cat "/tmp/${dirnam}run.log"
         log_str=$(<"/tmp/${dirnam}run.log")
-        $LOG_TO_SQL --status "ERROR" --message "trigger did not create folder for job: $job_number, $log_str"
+        $LOG_TO_SQL --status "ERROR" --message "trigger did not create folder for job: $job_number, \"$log_str\""
+        # we should remove the job from the job list if this is the case
+        jobsToDelete[$jobsCounter]="$line"
+        jobsCounter=$((jobsCounter + 1)) 
 	    continue
     fi
     chmod gou+rx "${ror_folder_path}"

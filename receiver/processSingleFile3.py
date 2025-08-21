@@ -1137,13 +1137,6 @@ if __name__ == "__main__":
                 print("The path to the pids does not exist (%s), use alternative location for pid file" % p)
                 pidfilename = tempfile.gettempdir() + '/processSingleFile' + projname + '.pid'
         lfn = ''.join([ os.path.dirname(os.path.abspath(__file__)), os.path.sep, 'logs', os.path.sep, 'processSingleFile' , projname , '.log' ])
-        # if we have a log directory in the config file, ust that location
-        if settings and 'LOGDIR' in settings:
-                logdir = settings['LOGDIR']
-                if not os.path.exists(logdir):
-                        print("The path to the logs does not exist (%s), use alternative location for log file" % logdir)
-                        logdir = tempfile.gettempdir()
-                lfn = ''.join([logdir, os.path.sep, 'processSingleFile' , projname , '.log' ])
 
         #log = logging.handlers.RotatingFileHandler(lfn, 'a', 10*1024*1024, backupCount=5)
         #log.setFormatter(logging.Formatter('%(levelname)s:%(asctime)s: %(message)s'))

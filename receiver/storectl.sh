@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # filename: storescpd
 #
 # purpose: start storescp server for processing user at boot time to receive data

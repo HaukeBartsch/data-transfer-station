@@ -23,15 +23,22 @@ port=`cat /config.json | jq -r ".DICOMPORT"`
 pidfile=${SERVERDIR}/.pids/storescpd.pid
 pipe=/tmp/.processSingleFilePipe
 
+LOGDIR=`cat /config.json | jq -r ".LOGDIR"`
+if [ ! -d "${LOGDIR}" ]; then
+   # revert back to the serverdir for logging
+   echo "Warning: /config.json does not have a valid LOGDIR entry. Revert back to using ${SERVERDIR}"
+   LOGDIR="${SERVERDIR}"/logs/
+fi
+
 projname="$2"
 if [ -z "$projname" ]; then
     projname="ABCD"
 else
     if [ "$projname" != "ABCD" ]; then
-	DATADIR=`cat /config.json | jq -r ".SITES.${projname}.DATADIR"`
-	port=`cat /config.json | jq -r ".SITES.${projname}.DICOMPORT"`
-	pidfile=${SERVERDIR}/.pids/storescpd${projname}.pid
-	pipe=/tmp/.processSingleFilePipe${projname}
+  	    DATADIR=`cat /config.json | jq -r ".SITES.${projname}.DATADIR"`
+	    port=`cat /config.json | jq -r ".SITES.${projname}.DICOMPORT"`
+	    pidfile=${SERVERDIR}/.pids/storescpd${projname}.pid
+	    pipe=/tmp/.processSingleFilePipe${projname}
     fi
 fi
 ARRIVEDDIR=${DATADIR}/site/.arrived
@@ -75,7 +82,7 @@ case $1 in
         RETVAL=$?
         [ $RETVAL = 0 ] && exit || echo "storescpd process not running, start now.."
         echo "Starting storescp daemon..."
-        echo "`date`: we try to start storescp by: /usr/bin/nohup /root/storescpFIONA --fork --promiscuous --write-xfer-little --exec-on-reception \"$scriptfile '#a' '#c' '#r' '#p' '#f' &\" --sort-on-study-uid scp --output-directory \"$od\" $port &>${SERVERDIR}/logs/storescpd.log &" >> ${SERVERDIR}/logs/storescpd-start.log
+        echo "`date`: we try to start storescp by: /usr/bin/nohup /root/storescpFIONA --fork --promiscuous --write-xfer-little --exec-on-reception \"$scriptfile '#a' '#c' '#r' '#p' '#f' &\" --sort-on-study-uid scp --output-directory \"$od\" $port &>${LOGDIR}/storescpd.log &" >> ${LOGDIR}/storescpd-start.log
 	# set the LD_LIBRARY_PATH to make this work on Ubuntu
 	export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/root/
         DCMDICTPATH=/usr/share/libdcmtk17/dicom.dic /usr/bin/nohup /root/storescpFIONA --fork \
@@ -88,7 +95,7 @@ case $1 in
             --exec-on-reception "PleaseLookAtThis '#a' '#c' '#r' '#p' '#f'" \
             --sort-on-study-uid scp \
             --output-directory "$od" \
-            $port >> ${SERVERDIR}/logs/storescpd${projname}.log 2>&1  &
+            $port >> ${LOGDIR}/storescpd${projname}.log 2>&1  &
         pid=$!
         echo $pid > $pidfile
         ;;

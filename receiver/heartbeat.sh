@@ -24,7 +24,7 @@ if [ ! -z "${LOGDIR}" ]; then
     if [ -d "${LOGDIR}" ]; then
         log=${LOGDIR}/heartbeat.log
     else
-        echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: The LOGDIR ${LOGDIR} does not exist, using default ${log}"
+        echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [heartbeat.sh] The LOGDIR ${LOGDIR} does not exist, using default ${log}"
     fi
 fi
 
@@ -40,7 +40,7 @@ if [ "$projname" != "ABCD" ]; then
         if [ -d "${LOGDIR}" ]; then
             log=${LOGDIR}/heartbeat${projname}.log
         else
-            echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: The LOGDIR ${LOGDIR} does not exist, using default ${log}"
+            echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [heartbeat.sh] The LOGDIR ${LOGDIR} does not exist, using default ${log}"
         fi
     fi
 fi
@@ -53,7 +53,7 @@ if [ ! -z "${LOGDIR}" ]; then
     if [ -d "${LOGDIR}" ]; then
         storelog=${LOGDIR}/heartbeat${projname}.log
     else
-        echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: The LOGDIR ${LOGDIR} does not exist, using default ${log}"
+        echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [heartbeat.sh] The LOGDIR ${LOGDIR} does not exist, using default ${log}"
     fi
 fi
 
@@ -69,20 +69,20 @@ fi
 #
 testtime=16
 if [ "$(( $(date +"%s") - $(stat -c "%Y" "$storelog") ))" -lt "$testtime" ]; then
-   echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: do not check with storescp: ${storelog} is too new, seems to work" >> $log
+   echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [heartbeat.sh] do not check with storescp: ${storelog} is too new, seems to work" >> $log
    exit 0
 fi
 
-echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: try now: /usr/bin/echoscu $PARENTIP $PARENTPORT" >> $log
+echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [heartbeat.sh] try now: /usr/bin/echoscu $PARENTIP $PARENTPORT" >> $log
 timeout 20 /usr/bin/echoscu $PARENTIP $PARENTPORT
 if (($? == 1)); then
    # get pid of the main storescu
    pid=`pgrep -f "storescp.*$PARENTPORT" | head -1`
    if [ -z "$pid" ]; then
-      echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: storescp's pid could not be found" >> $log
+      echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [heartbeat.sh] storescp's pid could not be found" >> $log
       exit 0
    fi
-   echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: detected unresponsive storescp, kill \"$pid\" and hope that the system restarts it" >> $log
+   echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [heartbeat.sh] detected unresponsive storescp, kill \"$pid\" and hope that the system restarts it" >> $log
    # stop storescu gracefully first
    kill -s SIGTERM $pid && kill -0 $pid || exit 0
    sleep 5
@@ -93,7 +93,7 @@ if (($? == 1)); then
    portstr=`netstat -lnp | grep $PARENTPORT`
    count=20
    while [ ! -z "$portstr" ]; do
-      echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: the port is still in use..." >> $log
+      echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [heartbeat.sh] the port is still in use..." >> $log
       # It happened once that this loop did not stop, the proc name was tmp and the loop continued to kill
       # storescp again and again. Only stopping heartbeat resolved this issue.
       (( --count ))
@@ -103,7 +103,7 @@ if (($? == 1)); then
 
       proc=`netstat -lnp | grep $PARENTPORT | cut -d'/' -f2`
       id=`netstat -lnp | grep $PARENTPORT | cut -d'/' -f 1 | awk '{ print $7 }'`
-      echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: the port is still in use by a process ($proc) with id $id, kill it" >> $log
+      echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [heartbeat.sh] the port is still in use by a process ($proc) with id $id, kill it" >> $log
       kill $id
       # and check again
       portstr=`netstat -lnp | grep $PARENTPORT`   
@@ -127,8 +127,8 @@ while read -r line; do
     if [ "$tr" -eq "0" ] || [ "$tr" = "" ]; then
 	:
     elif [ "$tr" -gt "3600" ]; then
-        echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: Error, detectStudyArrival is running for more than 1 hour, stop it now and have it restart" >> $log
-	/usr/bin/kill $line && /bin/bin/rm -f /var/www/html/server/.pids/detectStudyArrival${projname}.lock
-	# the cron job will restart this service again
+        echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [heartbeat.sh] Error, detectStudyArrival is running for more than 1 hour, stop it now and have it restart" >> $log
+	    /usr/bin/kill $line && /bin/bin/rm -f /var/www/html/server/.pids/detectStudyArrival${projname}.lock
+	    # the cron job will restart this service again
     fi
 done <<< "$ids"

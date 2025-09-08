@@ -195,8 +195,13 @@ while IFS= read -r line; do
             AETitle=$(echo "${destination}" | jq -r '.AETitle')
             IP=$(echo "${destination}" | jq -r '.IP')
             PORT=$(echo "${destination}" | jq -r '.PORT')
+            # The own application entity title might not be specified. In that case use the default above. If specified and not empty string do:
+            tmp_OwnAETitle=$(echo "${destination}" | jq -r '.OwnAETitle')
+            if [ "${tmp_OwnAETitle}" != "null" ] && [ ! -z "${tmp_OwnAETitle}" ]; then
+                OwnAETitle="${tmp_OwnAETitle}"
+            fi
 
-	        echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] extract destination from ${destination} AETitle: ${AETitle}, IP: ${IP}, PORT: ${PORT}"
+	        echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] extract destination from ${destination} AETitle: ${AETitle}, IP: ${IP}, PORT: ${PORT}. DTS reports to be: \"${OwnAETitle}\""
 
             # last step is sending the image data back to PACS, requires dcmtk to be installed and in the path
             storescu=$(which storescu)

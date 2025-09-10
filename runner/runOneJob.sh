@@ -211,8 +211,9 @@ while IFS= read -r line; do
                 echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] Error: storescu not found in path, cannot send data to PACS."
                 $LOG_TO_SQL --status "ERROR" --message "storescu not found in path, cannot send data to PACS." --accession_number "${AccessionNumber}" --study_instance_uid "${StudyInstanceUID}"
             else
-                echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] Sending output data to PACS using storescu \"$AETitle\" \"$IP\" \"$PORT\". Call: ${storescu} -nh -aec ${OwnAETitle} -aet ${AETitle} +sd +r ${IP} ${PORT} \"${ror_folder_path}_output\""
-                ${storescu} -nh -aec ${OwnAETitle} -aet ${AETitle} +sd +r ${IP} ${PORT} "${ror_folder_path}_output" >> /data/logs/storescu_send_to_PACS.log 2>&1
+                echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] Sending output data to PACS using storescu \"$AETitle\" \"$IP\" \"$PORT\". Call: ${storescu} -nh -aec ${AETitle} -aet ${OwnAETitle} +sd +r ${IP} ${PORT} \"${ror_folder_path}_output\""
+                echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] Sending output data to PACS using storescu \"$AETitle\" \"$IP\" \"$PORT\". Call: ${storescu} -nh -aec ${AETitle} -aet ${OwnAETitle} +sd +r ${IP} ${PORT} \"${ror_folder_path}_output\"" >> /data/logs/storescu_send_to_PACS.log 2>&1
+                ${storescu} -nh -aec ${AETitle} -aet ${OwnAETitle} +sd +r ${IP} ${PORT} "${ror_folder_path}_output" >> /data/logs/storescu_send_to_PACS.log 2>&1
                 $LOG_TO_SQL --status "OK" --message "send data in ${ror_folder_path}_output to PACS ${AETitle} ${IP} ${PORT}" --accession_number "${AccessionNumber}" --study_instance_uid "${StudyInstanceUID}"
             fi
 

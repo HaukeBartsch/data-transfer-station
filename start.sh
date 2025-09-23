@@ -37,4 +37,4 @@ fi
 
 # This can be run by a non-root user.
 # docker compose build --no-cache
-docker compose down && docker compose build && docker compose up
+docker compose down && docker compose build && docker compose up -d

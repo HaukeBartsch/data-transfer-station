@@ -17,8 +17,10 @@ Start the docker container 'receiver' and connect its port 11112 to the outside.
 
 
 ```{bash}
-   storescu -v -aec FIONA -aet FIONA -nh +r +sd localhost 11112 <some location with DICOM files>
+   storescu -v -aec AICORE1 -aet TR_SEND -nh +r +sd localhost 11112 <some location with DICOM files>
 ```
+(-aet is the application entity title of the senders, the -aec title is who the data is addressed to).
+
 
 # Setup as a system service (Linux only)
 

@@ -214,7 +214,9 @@ while IFS= read -r line; do
             else
                 echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] Sending output data to PACS using storescu \"$AETitle\" \"$IP\" \"$PORT\""
                 echo "`date +'%Y-%m-%d %H:%M:%S.%06N'`: [runOneJob.sh] Sending output data to PACS using storescu \"$AETitle\" \"$IP\" \"$PORT\"" >> /data/logs/storescu_send_to_PACS.log 2>&1
-                ${storescu} -nh -aec ${AETitle} -aet ${OwnAETitle} +sd +r ${IP} ${PORT} "${ror_folder_path}_output" >> /data/logs/storescu_send_to_PACS.log 2>&1
+		# We should check here if we have success and for how many images. In case that the OwnAETitle etc. are wrong we need to know
+		# put this in the log (images send back, non-images ignored)
+                ${storescu} -nh -v -aec ${AETitle} -aet ${OwnAETitle} +sd +r ${IP} ${PORT} "${ror_folder_path}_output" >> /data/logs/storescu_send_to_PACS.log 2>&1
                 $LOG_TO_SQL --status "OK" --message "send data in ${ror_folder_path}_output to PACS ${AETitle} ${IP} ${PORT}" --accession_number "${AccessionNumber}" --study_instance_uid "${StudyInstanceUID}"
             fi
 

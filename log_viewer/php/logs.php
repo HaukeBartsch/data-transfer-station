@@ -12,7 +12,7 @@ if ($action == "summary") {
    // create a summary from the log files
    $summary = array( 'alife' => "" );
    // check for heart beat
-   $heartbeat_file = "/data/logs/heartbeatPROJ.log";
+   $heartbeat_file = "./logs/heartbeatPROJ.log";
 
    if (($fp = fopen($heartbeat_file, "r")) == FALSE) {
       echo("{ \"message\": \"Error, could not open heartbeat log file\" }");
@@ -32,7 +32,7 @@ if ($action == "summary") {
    $summary['alife'] = $LastLine;
 
    // check if we had a trigger
-   $trigger_log_file = "/data/logs/trigger.log";
+   $trigger_log_file = "./logs/trigger.log";
    $data = "";
    if (filesize($trigger_log_file) > 1000000) {
      $data = file_get_contents($trigger_log_file, false, null, -1000000); // read last megabyte

@@ -7,7 +7,7 @@ if (isset($_GET['action'])) {
 }
 
 if ($action == "get_config") {
-   $data = file_get_contents("/data/code/trigger/config.json");
+   $data = file_get_contents("config.json");
    echo($data);
 } else {
   echo ("{ \"message\": \"Error: unknown action\" }");

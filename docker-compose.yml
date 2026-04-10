@@ -28,6 +28,20 @@ services:
     volumes:
       - /data/logs:/data/logs
 
+  log_viewer:
+    container_name: log_viewer
+    image: log_viewer
+    build: ./log_viewer
+    restart: unless-stopped
+    ports:
+      - 443:443
+    volumes:
+      - /data/logs:/var/www/html/logs
+      - ./configuration:/configuration
+      - ./my-httpd.conf:/usr/local/apache2/conf/httpd.conf
+      - ./certs:/usr/local/apache2/conf/:ro
+
+
   #logger:
   #  container_name: logger
   #  image: logger

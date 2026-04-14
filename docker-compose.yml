@@ -40,7 +40,6 @@ services:
       - ./configuration:/configuration
       - ./my-httpd.conf:/usr/local/apache2/conf/httpd.conf
       - ./certs:/usr/local/apache2/conf/:ro
-      - /data/logs/:/usr/local/apache2/htdocs/php/logs/:ro
 
 
   #logger:

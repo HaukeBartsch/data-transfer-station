@@ -1,59 +1,63 @@
 <?php
 
+header('Content-Type: application/json');
+
 $max_log_lines = 100;
 
 // the log reader
-$action = "";
-if (isset($_GET['action'])) {
-   $action = $_GET['action'];
+$action = $_GET['action'] ?? '';
+
+if ($action !== 'summary') {
+    echo(json_encode(["message" => "Unknown action"]));
+    exit;
 }
 
-if ($action == "summary") {
-   // create a summary from the log files
-   $summary = array( 'alife' => "" );
-   // check for heart beat
-   $heartbeat_file = "./logs/heartbeatPROJ.log";
+$summary = ['alife' => ""];
+$logs_dir = __DIR__ . '/logs';
 
-   if (($fp = fopen($heartbeat_file, "r")) == FALSE) {
-      echo("{ \"message\": \"Error, could not open heartbeat log file\" }");
-   }
-   fseek($fp, -1, SEEK_END); 
-   $pos = ftell($fp);
-   $LastLine = "";
-   $C = fgetc($fp);
-   $pos--;
-   // Loop backword util "\n" is found.
-   while((($C = fgetc($fp)) != "\n") && ($pos > 0)) {
-      //syslog(LOG_EMERG, "reading a character ".$C);
-      $LastLine = $C.$LastLine;
-      fseek($fp, $pos--);
-   }
-   fclose($fp);
-   $summary['alife'] = $LastLine;
+try {
+    // 1. Check Heartbeat Log (Efficient last-line reading)
+    $heartbeat_file = "$logs_dir/heartbeatPROJ.log";
+    if (file_exists($heartbeat_file) && is_readable($heartbeat_file)) {
+        $handle = fopen($heartbeat_file, 'r');
+        if ($handle) {
+            // Seek to near the end of the file (e.g., last 4KB)
+            $buffer_size = 4096;
+            $filesize = filesize($heartbeat_file);
+            $seek_pos = max(0, $filesize - $buffer_size);
+            fseek($handle, $seek_pos);
+            
+            $buffer = fread($handle, $filesize - $seek_pos);
+            $lines = explode("\n", rtrim($buffer));
+            $summary['alife'] = end($lines) ?: "";
+            fclose($handle);
+        }
+    } else {
+        // Optional: Log or handle missing heartbeat file
+        $summary['alife_error'] = "Heartbeat log not found or unreadable";
+    }
 
-   // check if we had a trigger
-   $trigger_log_file = "./logs/trigger.log";
-   $data = "";
-   if (filesize($trigger_log_file) > 1000000) {
-     $data = file_get_contents($trigger_log_file, false, null, -1000000); // read last megabyte
-   } else {
-     $data = file_get_contents($trigger_log_file);
-   }
-   $data = explode("\n", $data);
-   //syslog(LOG_EMERG, "split in ".count($data)." lines");
-   $data = array_reverse($data);
-   // filter by "triggered this service"
-   $summary["trigger_study"] = array();
-   foreach ($data as $line) {
-      if (count($summary["trigger_study"]) > $max_log_lines) {
-         break;
-      }
-      if (str_contains($line, "triggered service")) {
-         $summary["trigger_study"][] = $line;
-      }
-   }
+    // 2. Check Trigger Log (Optimized filtering)
+    $trigger_log_file = "$logs_dir/trigger.log";
+    if (file_exists($trigger_log_file) && is_readable($trigger_log_file)) {
+        $file_size = filesize($trigger_log_file);
+        // Read last 1MB if file is large
+        $read_size = ($file_size > 1000000) ? 1000000 : $file_size;
+        $offset = max(0, $file_size - $read_size);
+        
+        $data = file_get_contents($trigger_log_file, false, null, $offset);
+        if ($data !== false) {
+            $lines = explode("\n", $data);
+            // Use preg_grep for high-performance pattern matching
+            $matches = preg_grep('/triggered service/', $lines);
+            // Take the most recent matches up to $max_log_lines
+            $summary["trigger_study"] = array_slice(array_reverse($matches), 0, $max_log_lines);
+        }
+    }
 
-   echo(json_encode($summary));
-} else {
-      echo("{ \"message\": \"Unknown action\" }");  
+    echo(json_encode($summary));
+
+} catch (Exception $e) {
+    http_response_code(500);
+    echo json_encode(["message" => "Internal Server Error", "error" => $e->getMessage()]);
 }

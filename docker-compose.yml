@@ -36,10 +36,8 @@ services:
     ports:
       - 443:443
     volumes:
-      - /data/logs:/var/www/html/logs
-      - ./configuration:/configuration
-      - ./my-httpd.conf:/usr/local/apache2/conf/httpd.conf
-      - ./certs:/usr/local/apache2/conf/:ro
+      - /data/logs:/var/www/html/logs:ro
+      - ./configuration/config.json:/var/www/html/php/config.json:ro
 
 
   #logger:

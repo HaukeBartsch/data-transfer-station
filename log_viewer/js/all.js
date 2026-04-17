@@ -54,6 +54,83 @@ jQuery(document).ready(function() {
 					jQuery('#alife_value').val(data['alife']).hide().fadeIn();
 				}
 			}
+		    // backend_logging
+			if (typeof data["backend_logging"] != "undefined") {
+				jQuery("#log_table").children().remove();
+				var daysAgo = {};  // based on today we need an array of names and numbers				 
+				for (var i = 0; i < data["backend_logging"].length; i++) {
+					var l = data["backend_logging"][i].split(" ");
+					var rest = l.slice(3).join(' ');
+					var content = {};
+					var txt = "";
+					try {
+						content = JSON.parse(rest);
+						for(var j = 0; j < Object.keys(content).length; j++) {
+							var name = Object.keys(content)[j];
+							txt += "<h5>" + name + "</h5><p>" + ((content[name] == "\"\"")?"empty":content[name]) + "</p>";
+						}
+					} catch(e) {
+						console.log("could not parse as json: " + rest);
+						txt = rest;
+					}
+					var dat = dayjs(l[0],"YYYY-MM-DD");
+					var today = dayjs();
+					var diff = today.diff(dat, 'days');
+					if (daysAgo[diff] == undefined) {
+						daysAgo[diff] = [];
+					} else {
+						daysAgo[diff].push({ "date": l[0], "day": today.day(), "time": l[1] });
+					}
+					jQuery("#log_table").append("<tr><td>" + i + "</td><td>" + l[0] + " / " + l[1] + "</td><td>" + l[2] + "</td><td>" + txt + "</td></tr>");
+				}
+				var daysPrior = 28;
+				var labels = [];
+				var data = [];
+				for (var i = 0; i < daysPrior; i++) {
+					labels.push( dayjs().subtract(i, 'day').format('ddd') );
+					data.push( daysAgo[i] == undefined ? 0 : daysAgo[i].length );
+				}
+				// today should be last entry
+				labels = labels.reverse();
+				data = data.reverse();
+
+				// fill in the myChart
+				const ctx = document.getElementById('myChart');
+				// destroy the previous chart if it exists
+				if (typeof myChart != 'undefined') {
+					myChart.destroy();
+				}
+
+				// eslint-disable-next-line no-unused-vars
+				myChart = new Chart(ctx, {
+				  type: 'bar',
+				  data: {
+					labels: labels,
+					datasets: [{
+					  data: data,
+					  lineTension: 0,
+					  backgroundColor: 'rgba(255, 159, 64, 0.9)',
+					  borderColor: '#ffffff',
+					  borderRadius: 25,
+					  borderWidth: 1,
+					  barThickness: 50,
+					  pointBackgroundColor: '#007bff'
+					}]
+				  },
+				  options: {
+					plugins: {
+					  legend: {
+						display: false
+					  },
+					  tooltip: {
+						boxPadding: 3
+					  }
+					}
+				  }
+				});
+			}
+			
+		    /*
 			if (typeof data["trigger_study"] != "undefined") {
 				jQuery("#log_table").children().remove();
 				var daysAgo = {};  // based on today we need an array of names and numbers				 
@@ -127,7 +204,7 @@ jQuery(document).ready(function() {
 					}
 				  }
 				});
-			}
+			} */
 		});
 	}, 10000);
 });

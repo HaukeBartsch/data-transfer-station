@@ -49,11 +49,30 @@ try {
         if ($data !== false) {
             $lines = explode("\n", $data);
             // Use preg_grep for high-performance pattern matching
-            $matches = preg_grep('/triggered service/', $lines);
+            $matches = preg_grep('/triggered clinical service/', $lines);
             // Take the most recent matches up to $max_log_lines
             $summary["trigger_study"] = array_slice(array_reverse($matches), 0, $max_log_lines);
         }
     }
+
+    // 3. Check the backend logging script
+    $trigger_log_file = "$logs_dir/backend_logging.log";
+    if (file_exists($trigger_log_file) && is_readable($trigger_log_file)) {
+        $file_size = filesize($trigger_log_file);
+        // Read last 1MB if file is large
+        $read_size = ($file_size > 1000000) ? 1000000 : $file_size;
+        $offset = max(0, $file_size - $read_size);
+        
+        $data = file_get_contents($trigger_log_file, false, null, $offset);
+        if ($data !== false) {
+            $lines = explode("\n", $data);
+            // Use preg_grep for high-performance pattern matching
+            $matches = preg_grep('/BackendLogging with arguments/', $lines);
+            // Take the most recent matches up to $max_log_lines
+            $summary["backend_logging"] = array_slice(array_reverse($matches), 0, $max_log_lines);
+        }
+    }
+    
 
     echo(json_encode($summary));
 

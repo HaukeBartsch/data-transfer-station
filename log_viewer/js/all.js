@@ -228,6 +228,7 @@ jQuery(document).ready(function() {
 	jQuery.getJSON('php/logs.php', { 'action': 'summary' }, function(data) {
 	    navigator.clipboard.writeText(JSON.stringify(data));
 	});
+    });
     jQuery('#export-button').on('click', function() {
 	// call again and copy everything to clipboard
 	jQuery.getJSON('php/logs.php', { 'action': 'summary' }, function(data) {

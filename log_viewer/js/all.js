@@ -207,5 +207,20 @@ jQuery(document).ready(function() {
 			} */
 		});
 	}, 10000);
+
+    jQuery('#copy-button').on('click', function() {
+	// call again and copy everything to clipboard
+	jQuery.getJSON('php/logs.php', { 'action': 'summary' }, function(data) {
+	    navigator.clipboard.writeText(JSON.stringify(data));
+	});
+    jQuery('#export-button').on('click', function() {
+	// call again and copy everything to clipboard
+	jQuery.getJSON('php/logs.php', { 'action': 'summary' }, function(data) {
+	    var element = document.createElement('a');
+	    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(data)));
+	    element.setAttribute('download', 'data-transfer-system.log');
+	    element.click();
+	});
+    });
 });
 

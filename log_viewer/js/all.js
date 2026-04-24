@@ -61,13 +61,16 @@ jQuery(document).ready(function() {
 				for (var i = 0; i < data["backend_logging"].length; i++) {
 					var l = data["backend_logging"][i].split(" ");
 					var rest = l.slice(3).join(' ');
+					rest = rest.replace(/Backend logging with arguments: Namespace(//g, "");
+					rest = rest.replace(/\)/g, "");
 					var content = {};
 					var txt = "";
 					try {
-						content = JSON.parse(rest);
+						content = Object.fromEntries(rest.split(", ").map(s => s.split("=")));
+						// content = JSON.parse(rest);
 						for(var j = 0; j < Object.keys(content).length; j++) {
 							var name = Object.keys(content)[j];
-							txt += "<h5>" + name + "</h5><p>" + ((content[name] == "\"\"")?"empty":content[name]) + "</p>";
+							txt += "<h5>" + name + "</h5><p>" + ((content[name] == "\"\"" || content[name] == "None")?"empty":content[name].replace(/["']/g, "")) + "</p>";
 						}
 					} catch(e) {
 						console.log("could not parse as json: " + rest);

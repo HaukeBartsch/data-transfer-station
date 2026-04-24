@@ -18,17 +18,17 @@ jQuery(document).ready(function() {
 			jQuery('#timeout_value').val(data['timeout']);
 		}
 		if (typeof data['logging'] != 'undefined' && data['logging'].length > 0) {
-			if (typeof data['logging'][0].logging_server_name != "undefined") {
-				jQuery('#logging_server_name').val(data['logging'][0].logging_server_name);
+			if (typeof data['logging'][0].host != "undefined") {
+				jQuery('#logging_server_name').val(data['logging'][0].host);
 			}
-			if (typeof data['logging'][0].logging_server_port != "undefined") {
-				jQuery('#logging_server_port').val(data['logging'][0].logging_server_port);
+			if (typeof data['logging'][0].port != "undefined") {
+				jQuery('#logging_server_port').val(data['logging'][0].port);
 			}
-			if (typeof data['logging'][0].logging_server_dbname != "undefined") {
-				jQuery('#logging_server_dbname').val(data['logging'][0].logging_server_dbname);
+			if (typeof data['logging'][0].dbname != "undefined") {
+				jQuery('#logging_server_dbname').val(data['logging'][0].dbname);
 			}
-			if (typeof data['logging'][0].logging_server_driver != "undefined") {
-				jQuery('#logging_server_driver').val(data['logging'][0].logging_server_driver);
+			if (typeof data['logging'][0].driver != "undefined") {
+				jQuery('#logging_server_driver').val(data['logging'][0].driver);
 			}
 		}
 		jQuery("#stream-info").children().remove();
@@ -61,7 +61,7 @@ jQuery(document).ready(function() {
 				for (var i = 0; i < data["backend_logging"].length; i++) {
 					var l = data["backend_logging"][i].split(" ");
 					var rest = l.slice(3).join(' ');
-					rest = rest.replace(/Backend logging with arguments: Namespace\(/, "");
+					rest = rest.replace(/BackendLogging with arguments: Namespace\(/, "");
 					rest = rest.replace(/\)/, "");
 					var content = {};
 					var txt = "";

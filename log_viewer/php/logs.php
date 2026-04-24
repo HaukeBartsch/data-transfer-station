@@ -2,7 +2,7 @@
 
 header('Content-Type: application/json');
 
-$max_log_lines = 100;
+$max_log_lines = 400;
 
 // the log reader
 $action = $_GET['action'] ?? '';

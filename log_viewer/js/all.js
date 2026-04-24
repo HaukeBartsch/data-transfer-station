@@ -68,9 +68,12 @@ jQuery(document).ready(function() {
 					try {
 						content = Object.fromEntries(rest.split(", ").map(s => s.split("=")));
 						// content = JSON.parse(rest);
-						for(var j = 0; j < Object.keys(content).length; j++) {
+						for (var j = 0; j < Object.keys(content).length; j++) {
 							var name = Object.keys(content)[j];
-							txt += "<h5>" + name + "</h5><p>" + ((content[name] == "\"\"" || content[name] == "None")?"empty":content[name].replace(/["']/g, "")) + "</p>";
+							if (content[name] == "\"\"" || content[name] == "None") {
+								continue;
+							}
+							txt += "<h5>" + name + "</h5><p>" + (content[name].replace(/["']/g, "")) + "</p>";
 						}
 					} catch(e) {
 						console.log("could not parse as json: " + rest);

@@ -61,7 +61,7 @@ jQuery(document).ready(function() {
 				for (var i = 0; i < data["backend_logging"].length; i++) {
 					var l = data["backend_logging"][i].split(" ");
 					var rest = l.slice(3).join(' ');
-					rest = rest.replace(/Backend logging with arguments: Namespace(//g, "");
+					rest = rest.replace(/Backend logging with arguments: Namespace\(//g, "");
 					rest = rest.replace(/\)/g, "");
 					var content = {};
 					var txt = "";

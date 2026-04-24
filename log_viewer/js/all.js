@@ -17,7 +17,7 @@ jQuery(document).ready(function() {
 		if (typeof data['timeout'] != 'undefined') {
 			jQuery('#timeout_value').val(data['timeout']);
 		}
-		if (typeof data['logging'].length > 0) {
+		if (typeof data['logging'] != 'undefined' && data['logging'].length > 0) {
 			if (typeof data['logging'][0].logging_server_name != "undefined") {
 				jQuery('#logging_server_name').val(data['logging'][0].logging_server_name);
 			}
@@ -61,8 +61,8 @@ jQuery(document).ready(function() {
 				for (var i = 0; i < data["backend_logging"].length; i++) {
 					var l = data["backend_logging"][i].split(" ");
 					var rest = l.slice(3).join(' ');
-					rest = rest.replace(/Backend logging with arguments: Namespace\(//g, "");
-					rest = rest.replace(/\)/g, "");
+					rest = rest.replace(/Backend logging with arguments: Namespace\(/, "");
+					rest = rest.replace(/\)/, "");
 					var content = {};
 					var txt = "";
 					try {

@@ -82,7 +82,7 @@ jQuery(document).ready(function() {
 									colorIndex = (colorIndex + 1) % colors.length;
 								}
 							}
-							txt += "<h5>" + name + "</h5><p>" + (content[name].replace(/["']/g, "")) + "</p>";
+							txt += "<h5>" + name + "</h5><p style=\"background-color: " + colors[colorIndex] + "; padding-left: 5px; padding-right: 5px;\">" + (content[name].replace(/["']/g, "")) + "</p>";
 						}
 					} catch(e) {
 						console.log("could not parse as json: " + rest);

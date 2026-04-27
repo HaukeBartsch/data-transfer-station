@@ -57,6 +57,9 @@ jQuery(document).ready(function() {
 		    // backend_logging
 			if (typeof data["backend_logging"] != "undefined") {
 				jQuery("#log_table").children().remove();
+				let colors = ["#B3E2CDFF", "#FDCDACFF", "#CBD5E8FF", "#F4CAE4FF", "#E6F5C9FF", "#FFF2AEFF", "#F1E2CCFF", "#CCCCCCFF"];
+				let colorIndex = 0;
+				let currentAccessionNumber = "";
 				var daysAgo = {};  // based on today we need an array of names and numbers				 
 				for (var i = 0; i < data["backend_logging"].length; i++) {
 					var l = data["backend_logging"][i].split(" ");
@@ -73,6 +76,12 @@ jQuery(document).ready(function() {
 							if (content[name] == "\"\"" || content[name] == "None") {
 								continue;
 							}
+							if (name == "AccessionNumber") {
+								if (currentAccessionNumber != content[name]) {
+									currentAccessionNumber = content[name];
+									colorIndex = (colorIndex + 1) % colors.length;
+								}
+							}
 							txt += "<h5>" + name + "</h5><p>" + (content[name].replace(/["']/g, "")) + "</p>";
 						}
 					} catch(e) {
@@ -87,7 +96,7 @@ jQuery(document).ready(function() {
 					} else {
 						daysAgo[diff].push({ "date": l[0], "day": today.day(), "time": l[1] });
 					}
-					jQuery("#log_table").append("<tr><td>" + i + "</td><td>" + l[0] + " / " + l[1] + "</td><td>" + l[2] + "</td><td>" + txt + "</td></tr>");
+					jQuery("#log_table").append("<tr style=\"background-color: " + colors[colorIndex] + ";\"><td>" + i + "</td><td>" + l[0] + " / " + l[1] + "</td><td>" + l[2] + "</td><td>" + txt + "</td></tr>");
 				}
 				var daysPrior = 28;
 				var labels = [];

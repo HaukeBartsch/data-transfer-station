@@ -76,7 +76,7 @@ jQuery(document).ready(function() {
 							if (content[name] == "\"\"" || content[name] == "None") {
 								continue;
 							}
-							if (name == "AccessionNumber") {
+							if (name == "accession_number") {
 								if (currentAccessionNumber != content[name]) {
 									currentAccessionNumber = content[name];
 									colorIndex = (colorIndex + 1) % colors.length;

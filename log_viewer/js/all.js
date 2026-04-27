@@ -95,10 +95,9 @@ jQuery(document).ready(function() {
 					var diff = today.diff(dat, 'days');
 					if (daysAgo[diff] == undefined) {
 						daysAgo[diff] = [];
-					} else {
-						daysAgo[diff].push({ "date": l[0], "day": today.day(), "time": l[1] });
 					}
-					jQuery("#log_table").append("<tr style=\"background-color: " + colors[colorIndex] + ";\"><td>" + i + "</td><td>" + l[0] + " / " + l[1] + "</td><td>" + l[2] + "</td><td>" + txt + "</td></tr>");
+					daysAgo[diff].push({ "date": l[0], "day": today.day(), "time": l[1] });
+					jQuery("#log_table").append("<tr><td>" + (i+1) + "</td><td>" + l[0] + " / " + l[1] + "</td><td>" + l[2] + "</td><td>" + txt + "</td></tr>");
 				}
 				var daysPrior = 28;
 				var labels = [];

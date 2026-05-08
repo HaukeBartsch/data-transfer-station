@@ -69,21 +69,24 @@ jQuery(document).ready(function() {
 					var content = {};
 					var txt = "";
 					try {
-						content = Object.fromEntries(rest.split(", ").map(s => s.split("=")));
-						// content = JSON.parse(rest);
-						for (var j = 0; j < Object.keys(content).length; j++) {
-							var name = Object.keys(content)[j];
-							if (content[name] == "\"\"" || content[name] == "None") {
+						// parse the individual fields better
+						const regex = /(\w+)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^,]+))/g;
+						const matches = [...rest.matchAll(regex)];
+
+						for (const match of matches) {
+							const name = match[1];
+							const value = (match[2] || match[3] || match[4]).trim();
+							if (value == "\"\"" || value == "None") {
 								continue;
 							}
 							if (name == "accession_number") {
-								if (currentAccessionNumber != content[name]) {
-									currentAccessionNumber = content[name];
+								if (currentAccessionNumber != value) {
+									currentAccessionNumber = value;
 									colorIndex = (colorIndex + 1) % colors.length;
 								}
-								txt += "<h5>" + name + "</h5><p style=\"background-color: " + colors[colorIndex] + "; padding-left: 5px; padding-right: 5px;\">" + (content[name].replace(/["']/g, "")) + "</p>";
+								txt += "<h5>" + name + "</h5><p style=\"background-color: " + colors[colorIndex] + "; padding-left: 5px; padding-right: 5px;\">" + (value.replace(/["']/g, "")) + "</p>";
 							} else {
-								txt += "<h5>" + name + "</h5><p>" + (content[name].replace(/["']/g, "")) + "</p>";
+								txt += "<h5>" + name + "</h5><p>" + (value.replace(/["']/g, "")) + "</p>";
 							}
 						}
 					} catch(e) {

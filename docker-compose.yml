@@ -36,7 +36,7 @@ services:
     ports:
       - 443:443
     volumes:
-      - /data/logs:/var/www/html/logs:ro
+      - /data/logs:/var/www/html/php/logs:ro
       - ./configuration/config.json:/var/www/html/php/config.json:ro
 
 

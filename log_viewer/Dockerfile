@@ -1,5 +1,7 @@
 FROM php:8.4-apache-bookworm
 
+# Upgrade Apache packages to patched Debian version,
+# install required modules/tools, and enable Apache modules/sites.
 # Add company CA certificates
 # Each certificate must be PEM format and have .crt extension
 COPY ./hvicertificates/company-ca-issuing-02-hvn.crt /usr/local/share/ca-certificates/company-ca-issuing-02-hvn.crt

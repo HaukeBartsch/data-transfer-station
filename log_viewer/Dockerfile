@@ -2,6 +2,13 @@ FROM php:8.4-apache-bookworm
 
 # Upgrade Apache packages to patched Debian version,
 # install required modules/tools, and enable Apache modules/sites.
+# Add company CA certificates
+# Each certificate must be PEM format and have .crt extension
+COPY ./hvicertificates/company-ca-issuing-02-hvn.crt /usr/local/share/ca-certificates/company-ca-issuing-02-hvn.crt
+COPY ./hvicertificates/company-ca-root-hvn.crt /usr/local/share/ca-certificates/company-ca-root-hvn.crt
+
+# Upgrade Apache packages to patched Debian version, install required modules/tools,
+# register company CA certificates, and enable Apache modules/sites.
 RUN set -eux; \
     apt-get update; \
     apt-get install -y --only-upgrade \
@@ -15,6 +22,7 @@ RUN set -eux; \
         ssl-cert \
         libapache2-mod-security2 \
         libapache2-mod-evasive; \
+    update-ca-certificates; \
     a2enmod security2 proxy_fcgi setenvif rewrite ssl; \
     a2dismod http2 proxy_http2 || true; \
     a2ensite default-ssl; \
@@ -35,3 +43,4 @@ RUN chown -R www-data:www-data /var/www/html/ \
     && chmod -R 750 /var/www/html/
 
 EXPOSE 443
+

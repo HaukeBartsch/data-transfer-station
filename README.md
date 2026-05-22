@@ -2,13 +2,17 @@
 
 A self-hosted digital platform for the secure image exchange and processing integrated with hospital systems using industry standards.
 
+Components:
+
+- **Govenor module**: Identifies when incoming data is compatible with processing (using DICOM attributes).
+- **Processing pipeline module**: Shared capabilities for clinical integration (presentation state annotation and structured reporting)
+- **Observability module**: Centralized logging and error reporting, user-facing web-interface for processing logs.
+
 ### Technical details
 
 A DICOM aware platform that allows for in-house image processing using AI. Receives medical images from PACS and can trigger AI processing pipelines including routing of incoming and outgoing images on the network. 
 
-With Data Transfer Station you participate in the hospital network as a
-fully automated medical service. Radiologists will be sending an exam from PACS, processing
-is triggered to generate a report and that report bounces back to the sending system.
+With Data Transfer Station you participate in the hospital network as a fully automated medical service. Radiologists will be sending an exam from PACS, processing is triggered to generate a report and that report bounces back to the sending system.
 
 The setup describes the roll-out in a docker/docker-compose environment.
 

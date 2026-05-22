@@ -4,9 +4,9 @@ A self-hosted digital platform for the secure image exchange and processing inte
 
 Components:
 
-- **Govenor module**: Identifies when incoming data is compatible with processing (using DICOM attributes).
-- **Processing pipeline module**: Shared capabilities for clinical integration (presentation state annotation and structured reporting)
-- **Observability module**: Centralized logging and error reporting, user-facing web-interface for processing logs.
+- **Govenor module**: Identifies compatibility of incoming data (using DICOM attributes).
+- **Processing pipeline module**: Shared capabilities for all clinical integration (presentation state annotation and structured reporting)
+- **Observability module**: Centralized logging and error reporting, user-facing web-interface for processing logs
 
 ### Technical details
 

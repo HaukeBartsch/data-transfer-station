@@ -770,7 +770,13 @@ class ProcessSingleFile(Daemon):
                                                 oldmask = os.umask(0)
                                                 os.makedirs(patdir,0o1777)
                                                 os.umask(oldmask)
-                                        studydir = os.path.join(patdir, ''.join([dataset.StudyDate, "_", dataset.StudyTime]))
+                                        studydir = ''
+                                        try:
+                                                studydir = os.path.join(patdir, ''.join([dataset.StudyDate, "_", dataset.StudyTime]))
+                                        except AttributeError:
+                                                logging.error('Did not find StudyDate or StudyTime in %s' % fn)
+                                                studydir = os.path.join(patdir, "_")
+                                                continue
                                         if not os.path.islink( studydir ):
                                                 os.symlink( os.path.join(outdir.decode('utf-8'), dataset.StudyInstanceUID), studydir )
                                 #else:
